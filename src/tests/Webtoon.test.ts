@@ -106,7 +106,7 @@ describe('Webtoon Tests', function () {
     })
 
     it("Testing Notifications", async () => {
-        let updates = await wrapper.filterUpdatedManga(source, new Date("2021-1-27"), [mangaId])
+        let updates = await wrapper.filterUpdatedManga(source, new Date("2021-02-01"), [mangaId])
         expect(updates, "No server response").to.exist
         expect(updates, "Empty server response").to.not.be.empty
         expect(updates[0], "No updates").to.not.be.empty;

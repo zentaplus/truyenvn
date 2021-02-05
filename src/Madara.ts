@@ -116,7 +116,7 @@ export abstract class Madara extends Source {
         let time: Date
         let trimmed: number = Number((/\d*/.exec(timeAgo) ?? [])[0])
         trimmed = (trimmed == 0 && timeAgo.includes('a')) ? 1 : trimmed
-        if (timeAgo.includes('minutes') || timeAgo.includes('minute')) {
+        if (timeAgo.includes('mins') || timeAgo.includes('minutes') || timeAgo.includes('minute')) {
             time = new Date(Date.now() - trimmed * 60000)
         } else if (timeAgo.includes('hours') || timeAgo.includes('hour')) {
             time = new Date(Date.now() - trimmed * 3600000)
@@ -340,12 +340,15 @@ export abstract class Madara extends Source {
                     "page": page,
                     "template": "madara-core/content/content-archive",
                     "vars[orderby]": "meta_value_num",
+                    "vars[sidebar]": "right",
+                    "vars[post_type]": "wp-manga",
                     "vars[meta_key]":"_latest_update",
                     "vars[paged]": "1",
-                    "vars[posts_per_page]": "50"
+                    "vars[posts_per_page]": "50",
+                    "vars[order]": "desc"
                 })
-                // For use with Mocha tests only
-                // data: `action=madara_load_more&page=${page}&template=madara-core/content/content-archive&vars[orderby]=meta_value_num&vars[paged]=1&vars[posts_per_page]=50&vars[meta_key]=_latest_update`
+                // Only for use with Mocha tests
+                // data: `action=madara_load_more&page=${page}&template=madara-core/content/content-archive&vars[paged]=1&vars[orderby]=meta_value_num&vars[sidebar]=right&vars[post_type]=wp-manga&vars[meta_key]=_latest_update&vars[order]=desc&vars[posts_per_page]=50`
             })
 
             let data = await this.requestManager.schedule(request, 1)
@@ -353,8 +356,16 @@ export abstract class Madara extends Source {
             let updatedManga: string[] = []
 
             for (let obj of $('div.manga').toArray()) {
-                let id = $('a', $('h3.h5', $(obj))).attr('href')?.replace(`${this.baseUrl}/${this.sourceTraversalPathName}/`, '').replace('/', '') ?? ''
-                let mangaTime = this.convertTime($('.c-new-tag', obj).text().trim())
+                let id = $('a', $('h3.h5', obj)).attr('href')?.replace(`${this.baseUrl}/${this.sourceTraversalPathName}/`, '').replace('/', '') ?? ''
+                let mangaTime: Date
+                if($('.c-new-tag a', obj).length > 0) {
+                    // Use blinking red NEW tag
+                    mangaTime = this.convertTime($('.c-new-tag a', obj).attr('title') ?? '')
+                }
+                else {
+                    // Use span
+                    mangaTime = this.convertTime($('span', $('.chapter-item', obj).first()).last().text() ?? '')
+                }
                 passedReferenceTime = mangaTime <= time
                 if (!passedReferenceTime) {
                     if (ids.includes(id)) {
@@ -366,6 +377,7 @@ export abstract class Madara extends Source {
                     throw(`Failed to parse homepage sections for ${this.baseUrl}/${this.homePage}/`)
                 }
             }
+            if (!passedReferenceTime) page++
             if (updatedManga.length > 0) {
                 mangaUpdatesFoundCallback(createMangaUpdates({
                     ids: updatedManga
