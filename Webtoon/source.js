@@ -686,7 +686,7 @@ class Madara extends paperback_extensions_common_1.Source {
         let time;
         let trimmed = Number(((_a = /\d*/.exec(timeAgo)) !== null && _a !== void 0 ? _a : [])[0]);
         trimmed = (trimmed == 0 && timeAgo.includes('a')) ? 1 : trimmed;
-        if (timeAgo.includes('minutes') || timeAgo.includes('minute')) {
+        if (timeAgo.includes('mins') || timeAgo.includes('minutes') || timeAgo.includes('minute')) {
             time = new Date(Date.now() - trimmed * 60000);
         }
         else if (timeAgo.includes('hours') || timeAgo.includes('hour')) {
@@ -880,7 +880,7 @@ class Madara extends paperback_extensions_common_1.Source {
         });
     }
     filterUpdatedManga(mangaUpdatesFoundCallback, time, ids) {
-        var _a, _b;
+        var _a, _b, _c, _d;
         return __awaiter(this, void 0, void 0, function* () {
             // If we're supplied a page that we should be on, set our internal reference to that page. Otherwise, we start from page 0.
             let page = 0;
@@ -898,19 +898,30 @@ class Madara extends paperback_extensions_common_1.Source {
                         "page": page,
                         "template": "madara-core/content/content-archive",
                         "vars[orderby]": "meta_value_num",
+                        "vars[sidebar]": "right",
+                        "vars[post_type]": "wp-manga",
                         "vars[meta_key]": "_latest_update",
                         "vars[paged]": "1",
-                        "vars[posts_per_page]": "50"
+                        "vars[posts_per_page]": "50",
+                        "vars[order]": "desc"
                     })
-                    // For use with Mocha tests only
-                    // data: `action=madara_load_more&page=${page}&template=madara-core/content/content-archive&vars[orderby]=meta_value_num&vars[paged]=1&vars[posts_per_page]=50&vars[meta_key]=_latest_update`
+                    // Only for use with Mocha tests
+                    // data: `action=madara_load_more&page=${page}&template=madara-core/content/content-archive&vars[paged]=1&vars[orderby]=meta_value_num&vars[sidebar]=right&vars[post_type]=wp-manga&vars[meta_key]=_latest_update&vars[order]=desc&vars[posts_per_page]=50`
                 });
                 let data = yield this.requestManager.schedule(request, 1);
                 let $ = this.cheerio.load(data.data);
                 let updatedManga = [];
                 for (let obj of $('div.manga').toArray()) {
-                    let id = (_b = (_a = $('a', $('h3.h5', $(obj))).attr('href')) === null || _a === void 0 ? void 0 : _a.replace(`${this.baseUrl}/${this.sourceTraversalPathName}/`, '').replace('/', '')) !== null && _b !== void 0 ? _b : '';
-                    let mangaTime = this.convertTime($('.c-new-tag', obj).text().trim());
+                    let id = (_b = (_a = $('a', $('h3.h5', obj)).attr('href')) === null || _a === void 0 ? void 0 : _a.replace(`${this.baseUrl}/${this.sourceTraversalPathName}/`, '').replace('/', '')) !== null && _b !== void 0 ? _b : '';
+                    let mangaTime;
+                    if ($('.c-new-tag a', obj).length > 0) {
+                        // Use blinking red NEW tag
+                        mangaTime = this.convertTime((_c = $('.c-new-tag a', obj).attr('title')) !== null && _c !== void 0 ? _c : '');
+                    }
+                    else {
+                        // Use span
+                        mangaTime = this.convertTime((_d = $('span', $('.chapter-item', obj).first()).last().text()) !== null && _d !== void 0 ? _d : '');
+                    }
                     passedReferenceTime = mangaTime <= time;
                     if (!passedReferenceTime) {
                         if (ids.includes(id)) {
@@ -923,6 +934,8 @@ class Madara extends paperback_extensions_common_1.Source {
                         throw (`Failed to parse homepage sections for ${this.baseUrl}/${this.homePage}/`);
                     }
                 }
+                if (!passedReferenceTime)
+                    page++;
                 if (updatedManga.length > 0) {
                     mangaUpdatesFoundCallback(createMangaUpdates({
                         ids: updatedManga
