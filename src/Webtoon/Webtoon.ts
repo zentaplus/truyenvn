@@ -1,17 +1,17 @@
 import {LanguageCode, SourceInfo, TagType} from "paperback-extensions-common";
 import {Madara} from '../Madara'
 
-const MANGATX_DOMAIN = "https://mangatx.com"
+const WEBTOON_DOMAIN = "https://www.webtoon.xyz"
 
-export const MangaTXInfo: SourceInfo = {
+export const WebtoonInfo: SourceInfo = {
     version: '1.0.0',
-    name: 'MangaTX.com',
-    description: 'Extension that pulls manga from mangatx.com',
+    name: 'Webtoon.xyz',
+    description: 'Extension that pulls manga from webtoon.xyz',
     author: 'GameFuzzy',
     authorWebsite: 'http://github.com/gamefuzzy',
     icon: "icon.png",
     hentaiSource: false,
-    websiteBaseURL: MANGATX_DOMAIN,
+    websiteBaseURL: WEBTOON_DOMAIN,
     sourceTags: [
         {
             text: "Notifications",
@@ -20,7 +20,9 @@ export const MangaTXInfo: SourceInfo = {
     ]
 }
 
-export class MangaTX extends Madara {
-    baseUrl: string = MANGATX_DOMAIN
+export class Webtoon extends Madara {
+    baseUrl: string = WEBTOON_DOMAIN
     languageCode: LanguageCode = LanguageCode.ENGLISH
+    sourceTraversalPathName: string = 'read'
+    homePage: string = 'webtoons'
 }

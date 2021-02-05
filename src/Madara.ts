@@ -5,7 +5,7 @@ import {
     LanguageCode,
     Manga,
     MangaStatus,
-    MangaTile,
+    MangaTile, MangaUpdates,
     PagedResults,
     SearchRequest,
     Source,
@@ -77,8 +77,8 @@ export abstract class Madara extends Source {
 
         let numericId = $('a.wp-manga-action-button').attr('data-post')
         let title = this.decodeHTMLEntity($('div.post-title h1').first().text().replace(/NEW/, '').replace(/HOT/, '').replace('\\n', '').trim())
-        let author = this.decodeHTMLEntity($('div.author-content').first().text().replace("\\n", '').trim()).replace('Updating', '')
-        let artist = this.decodeHTMLEntity($('div.artist-content').first().text().replace("\\n", '').trim()).replace('Updating', '')
+        let author = this.decodeHTMLEntity($('div.author-content').first().text().replace("\\n", '').trim()).replace('Updating', 'Unknown')
+        let artist = this.decodeHTMLEntity($('div.artist-content').first().text().replace("\\n", '').trim()).replace('Updating', 'Unknown')
         let summary = this.decodeHTMLEntity($('p', $('div.description-summary')).text())
         let image = $('div.summary_image img').first().attr('data-src') ?? ''
         let rating = $('span.total_votes').text().replace('Your Rating', '')
@@ -116,11 +116,11 @@ export abstract class Madara extends Source {
         let time: Date
         let trimmed: number = Number((/\d*/.exec(timeAgo) ?? [])[0])
         trimmed = (trimmed == 0 && timeAgo.includes('a')) ? 1 : trimmed
-        if (timeAgo.includes('minutes')) {
+        if (timeAgo.includes('minutes') || timeAgo.includes('minute')) {
             time = new Date(Date.now() - trimmed * 60000)
-        } else if (timeAgo.includes('hours')) {
+        } else if (timeAgo.includes('hours') || timeAgo.includes('hour')) {
             time = new Date(Date.now() - trimmed * 3600000)
-        } else if (timeAgo.includes('days')) {
+        } else if (timeAgo.includes('days') || timeAgo.includes('day')) {
             time = new Date(Date.now() - trimmed * 86400000)
         } else if (timeAgo.includes('year') || timeAgo.includes('years')) {
             time = new Date(Date.now() - trimmed * 31556952000)
@@ -129,12 +129,6 @@ export abstract class Madara extends Source {
         }
 
         return time
-    }
-
-    parseDate(dateString: string): Date {
-        // Primarily we see dates for the format: "1 day ago" or "16 Apr 2020"
-        let dateStringModified = dateString.replace('day', 'days').replace('month', 'months').replace('hour', 'hours')
-        return new Date(this.convertTime(dateStringModified))
     }
 
     encodeObject(obj: { [x: string]: any }): any {
@@ -196,7 +190,7 @@ export abstract class Madara extends Source {
                 mangaId: realTitle ?? '',
                 langCode: this.languageCode ?? LanguageCode.UNKNOWN,
                 chapNum: Number(chapNum[1]) ?? 0,
-                time: this.parseDate(releaseDate)
+                time: this.convertTime(releaseDate)
             }))
         }
 
@@ -238,7 +232,6 @@ export abstract class Madara extends Source {
         // If we're supplied a page that we should be on, set our internal reference to that page. Otherwise, we start from page 0.
         let page = metadata?.page ?? 0
         let results: MangaTile[] = []
-        let $: any
 
         const request = createRequestObject({
             url: `${this.baseUrl}/wp-admin/admin-ajax.php/`,
@@ -257,10 +250,10 @@ export abstract class Madara extends Source {
             })
         })
         let data = await this.requestManager.schedule(request, 1)
-        $ = this.cheerio.load(data.data)
+        let $ = this.cheerio.load(data.data)
         for (let obj of $(this.searchMangaSelector).toArray()) {
             let id = ($('a', $(obj)).attr('href') ?? '').replace(`${this.baseUrl}/${this.sourceTraversalPathName}/`, '').replace('/', '')
-            let title = createIconText({text: this.decodeHTMLEntity($('a', $(obj)).attr('title')) ?? ''})
+            let title = createIconText({text: this.decodeHTMLEntity($('a', $(obj)).attr('title') ?? '')})
             let image = $('img', $(obj)).attr('data-src')
 
             if (typeof id === 'undefined' || typeof image === 'undefined' || typeof title.text === 'undefined') {
@@ -284,6 +277,27 @@ export abstract class Madara extends Source {
         })
     }
 
+    parseHomeSection($: CheerioStatic): MangaTile[] {
+        let items: MangaTile[] = []
+
+        for (let obj of $('div.manga').toArray()) {
+            let image = $('img', $(obj)).attr('data-src')
+            let title = this.decodeHTMLEntity($('a', $('h3.h5', $(obj))).text())
+            let id = $('a', $('h3.h5', $(obj))).attr('href')?.replace(`${this.baseUrl}/${this.sourceTraversalPathName}/`, '').replace('/', '')
+
+            if (!id || !title || !image) {
+                throw(`Failed to parse homepage sections for ${this.baseUrl}/${this.homePage}/`)
+            }
+
+            items.push(createMangaTile({
+                id: id,
+                title: createIconText({text: title}),
+                image: image
+            }))
+        }
+        return items
+    }
+
     /**
      * It's hard to capture a default logic for homepages. So for madara sources,
      * instead we've provided a homesection reader for the base_url/source_traversal_path/ endpoint.
@@ -303,26 +317,61 @@ export abstract class Madara extends Source {
 
         let data = await this.requestManager.schedule(request, 1)
         let $ = this.cheerio.load(data.data)
-        let items: MangaTile[] = []
-
-        for (let obj of $('div.manga').toArray()) {
-            let image = $('img', $(obj)).attr('data-src')
-            let title = this.decodeHTMLEntity($('a', $('h3.h5', $(obj))).text())
-            let id = $('a', $('h3.h5', $(obj))).attr('href')?.replace(`${this.baseUrl}/${this.sourceTraversalPathName}/`, '').replace('/', '')
-
-            if (!id || !title || !image) {
-                throw(`Failed to parse homepage sections for ${this.baseUrl}/${this.homePage}/`)
-            }
-
-            items.push(createMangaTile({
-                id: id,
-                title: createIconText({text: title}),
-                image: image
-            }))
-        }
+        let items: MangaTile[] = this.parseHomeSection($)
 
         section.items = items
         sectionCallback(section)
+    }
+
+    async filterUpdatedManga(mangaUpdatesFoundCallback: (updates: MangaUpdates) => void, time: Date, ids: string[]): Promise<void> {
+        // If we're supplied a page that we should be on, set our internal reference to that page. Otherwise, we start from page 0.
+        let page = 0
+        let passedReferenceTime = false
+        while (!passedReferenceTime) {
+            const request = createRequestObject({
+                url: `${this.baseUrl}/wp-admin/admin-ajax.php/`,
+                method: 'POST',
+                headers: {
+                    "content-type": "application/x-www-form-urlencoded",
+                    "referer": this.baseUrl
+                },
+                data: this.encodeObject({
+                    "action": "madara_load_more",
+                    "page": page,
+                    "template": "madara-core/content/content-archive",
+                    "vars[orderby]": "meta_value_num",
+                    "vars[meta_key]":"_latest_update",
+                    "vars[paged]": "1",
+                    "vars[posts_per_page]": "50"
+                })
+                // For use with Mocha tests only
+                // data: `action=madara_load_more&page=${page}&template=madara-core/content/content-archive&vars[orderby]=meta_value_num&vars[paged]=1&vars[posts_per_page]=50&vars[meta_key]=_latest_update`
+            })
+
+            let data = await this.requestManager.schedule(request, 1)
+            let $ = this.cheerio.load(data.data)
+            let updatedManga: string[] = []
+
+            for (let obj of $('div.manga').toArray()) {
+                let id = $('a', $('h3.h5', $(obj))).attr('href')?.replace(`${this.baseUrl}/${this.sourceTraversalPathName}/`, '').replace('/', '') ?? ''
+                let mangaTime = this.convertTime($('.c-new-tag', obj).text().trim())
+                passedReferenceTime = mangaTime <= time
+                if (!passedReferenceTime) {
+                    if (ids.includes(id)) {
+                        updatedManga.push(id)
+                    }
+                } else break
+
+                if (typeof id === 'undefined') {
+                    throw(`Failed to parse homepage sections for ${this.baseUrl}/${this.homePage}/`)
+                }
+            }
+            if (updatedManga.length > 0) {
+                mangaUpdatesFoundCallback(createMangaUpdates({
+                    ids: updatedManga
+                }))
+            }
+        }
     }
 
     async getViewMoreItems(homepageSectionId: string, metadata: any): Promise<PagedResults | null> {
