@@ -77,12 +77,12 @@ export abstract class Madara extends Source {
 
         let numericId = $('a.wp-manga-action-button').attr('data-post')
         let title = this.decodeHTMLEntity($('div.post-title h1').first().text().replace(/NEW/, '').replace(/HOT/, '').replace('\\n', '').trim())
-        let author = this.decodeHTMLEntity($('div.author-content').first().text().replace("\\n", '').trim())
-        let artist = this.decodeHTMLEntity($('div.artist-content').first().text().replace("\\n", '').trim())
+        let author = this.decodeHTMLEntity($('div.author-content').first().text().replace("\\n", '').trim()).replace('Updating', '')
+        let artist = this.decodeHTMLEntity($('div.artist-content').first().text().replace("\\n", '').trim()).replace('Updating', '')
         let summary = this.decodeHTMLEntity($('p', $('div.description-summary')).text())
         let image = $('div.summary_image img').first().attr('data-src') ?? ''
         let rating = $('span.total_votes').text().replace('Your Rating', '')
-        let isOngoing = $('div.summary-content', $('post-content_item').last()).text().toLowerCase().trim() == "ongoing"
+        let isOngoing = $('div.summary-content', $('div.post-content_item').last()).text().toLowerCase().trim() == "ongoing"
         let genres: Tag[] = []
         let hentai = $('.manga-title-badges.adult').length > 0
 
@@ -106,7 +106,7 @@ export abstract class Madara extends Source {
             desc: summary,
             status: isOngoing ? MangaStatus.ONGOING : MangaStatus.COMPLETED,
             rating: Number(rating),
-            hentai
+            hentai: hentai
         })
     }
 
@@ -278,8 +278,6 @@ export abstract class Madara extends Source {
         if (results.length > 49) {
             mData = {page: (page + 1)}
         }
-        console.log('page')
-        console.log(mData?.page ?? '')
         return createPagedResults({
             results: results,
             metadata: typeof mData?.page === 'undefined' ? undefined : mData
