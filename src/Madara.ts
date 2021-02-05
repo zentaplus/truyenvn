@@ -158,7 +158,7 @@ export abstract class Madara extends Source {
                 "content-type": "application/x-www-form-urlencoded",
                 "referer": this.baseUrl
             },
-            data: this.encodeObject({
+            data: this.urlEncodeObject({
                 "action": "manga_get_chapters",
                 "manga": mangaId
             })
@@ -240,7 +240,7 @@ export abstract class Madara extends Source {
                 "content-type": "application/x-www-form-urlencoded",
                 "referer": this.baseUrl
             },
-            data: this.encodeObject({
+            data: this.urlEncodeObject({
                 "action": "madara_load_more",
                 "page": page,
                 "template": "madara-core/content/content-search",
@@ -335,7 +335,7 @@ export abstract class Madara extends Source {
                     "content-type": "application/x-www-form-urlencoded",
                     "referer": this.baseUrl
                 },
-                data: this.encodeObject({
+                data: this.urlEncodeObject({
                     "action": "madara_load_more",
                     "page": page,
                     "template": "madara-core/content/content-archive",
