@@ -30,25 +30,13 @@ export abstract class Madara extends Source {
      * Used in all functions.
      */
     sourceTraversalPathName: string = 'manga'
-
-    /**
-     * Some Madara sources have a different selector which is required in order to parse
-     * out the popular manga. This defaults to the most common selector
-     * but can be overridden by other sources which need it.
-     */
-    popularMangaSelector: string = "div.page-item-detail"
-
-    /**
-     * Much like {@link popularMangaSelector} this will default to the most used CheerioJS
-     * selector to extract URLs from popular manga. This is available to be overridden.
-     */
-    popularMangaUrlSelector: string = "div.post-title a"
     /**
      * Different Madara sources might have a slightly different selector which is required to parse out
      * each manga object while on a search result page. This is the selector
      * which is looped over. This may be overridden if required.
      */
     searchMangaSelector: string = "div.c-tabs-item__content"
+    chapterDetailsSelector: string = "div.page-break"
     /**
      * Set to false if your source has individual buttons for each page as opposed to a 'LOAD MORE' button
      */
@@ -100,7 +88,7 @@ export abstract class Madara extends Source {
         let data = await this.requestManager.schedule(request, 1)
         let $ = this.cheerio.load(data.data)
 
-        return this.parser.parseChapterDetails($, mangaId, chapterId)
+        return this.parser.parseChapterDetails($, mangaId, chapterId, this.chapterDetailsSelector)
 
     }
 

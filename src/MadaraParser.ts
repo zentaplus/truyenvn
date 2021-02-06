@@ -55,7 +55,7 @@ export class Parser {
         let chapters: Chapter[] = []
 
         // Capture the manga title, as this differs from the ID which this function is fed
-        let realTitle = $('a', $('li.wp-manga-chapter  ').first()).attr('href')?.replace(`${source.baseUrl}/${source.sourceTraversalPathName}/`, '').replace(/\/chapter.*/, '')
+        let realTitle = $('a', $('li.wp-manga-chapter  ').first()).attr('href')?.replace(`${source.baseUrl}/${source.sourceTraversalPathName}/`, '').toLowerCase().replace(/\/chapter.*/, '')
 
         if (!realTitle) {
             throw(`Failed to parse the human-readable title for ${mangaId}`)
@@ -64,8 +64,7 @@ export class Parser {
         // For each available chapter..
         for (let obj of $('li.wp-manga-chapter  ').toArray()) {
             let id = ($('a', $(obj)).first().attr('href') || '').replace(`${source.baseUrl}/${source.sourceTraversalPathName}/${realTitle}/`, '').replace('/', '')
-            let chapNum = $('a', $(obj)).first().attr('href')?.match(/\/chapter-(\d*)/)
-            if (!chapNum) continue
+            let chapNum = $('a', $(obj)).first().attr('href')?.toLowerCase()?.match(/\/chapter-(\d*)/) ?? ''
             let releaseDate = $('i', $(obj)).length > 0 ? $('i', $(obj)).text() : $('.c-new-tag a', $(obj)).attr('title') ?? ''
 
             if (typeof id === 'undefined') {
@@ -75,7 +74,7 @@ export class Parser {
                 id: id,
                 mangaId: realTitle ?? '',
                 langCode: source.languageCode ?? LanguageCode.UNKNOWN,
-                chapNum: Number(chapNum[1]) ?? 0,
+                chapNum: Number(chapNum[1]),
                 time: source.convertTime(releaseDate)
             }))
         }
@@ -83,10 +82,10 @@ export class Parser {
         return this.sortChapters(chapters)
     }
 
-    parseChapterDetails($: CheerioSelector, mangaId: string, chapterId: string): ChapterDetails {
+    parseChapterDetails($: CheerioSelector, mangaId: string, chapterId: string, selector: string): ChapterDetails {
         let pages: string[] = []
 
-        for (let obj of $('div.page-break').toArray()) {
+        for (let obj of $(selector).toArray()) {
             let page = $('img', $(obj)).attr('data-src')
 
             if (!page) {
@@ -121,6 +120,7 @@ export class Parser {
             let image = $('img', $(obj)).attr('data-src')
 
             if (typeof id === 'undefined' || typeof image === 'undefined' || typeof title.text === 'undefined') {
+                if(id.includes('autopost')) continue
                 // Something went wrong with our parsing, return a detailed error
                 throw(`Failed to parse searchResult for ${source.baseUrl} using ${source.searchMangaSelector} as a loop selector`)
             }

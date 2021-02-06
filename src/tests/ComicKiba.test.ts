@@ -1,13 +1,13 @@
 import cheerio from 'cheerio'
 import { MadaraAPIWrapper } from '../MadaraAPIWrapper'
 import { Madara } from '../Madara'
-import { WebtoonXYZ } from '../WebtoonXYZ/WebtoonXYZ'
+import { ComicKiba } from '../ComicKiba/ComicKiba'
 
 describe('ComicKiba Tests', function () {
 
 
     var wrapper: MadaraAPIWrapper = new MadaraAPIWrapper();
-    var source: Madara = new WebtoonXYZ(cheerio);
+    var source: Madara = new ComicKiba(cheerio);
     var chai = require('chai'), expect = chai.expect, should = chai.should();
     var chaiAsPromised = require('chai-as-promised');
     chai.use(chaiAsPromised);
@@ -17,7 +17,7 @@ describe('ComicKiba Tests', function () {
      * Try to choose a manga which is updated frequently, so that the historical checking test can
      * return proper results, as it is limited to searching 30 days back due to extremely long processing times otherwise.
      */
-    var mangaId = "volcanic-age";
+    var mangaId = "star-martial-god-technique";
     var mangaNumericId = ''
 
     // Grab the ID automatically
@@ -73,7 +73,7 @@ describe('ComicKiba Tests', function () {
 
     it("Testing search", async () => {
         let testSearch = createSearchRequest({
-            title: 'Hero'
+            title: 'he'
         });
 
         let search = await wrapper.searchRequest(source, testSearch, {page: 0});
