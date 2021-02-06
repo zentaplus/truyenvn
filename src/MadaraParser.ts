@@ -1,4 +1,13 @@
-import {Chapter, ChapterDetails, LanguageCode, Manga, MangaStatus, MangaTile, Tag} from "paperback-extensions-common";
+import {
+    Chapter,
+    ChapterDetails,
+    LanguageCode,
+    Manga,
+    MangaStatus,
+    MangaTile,
+    Tag,
+    TagSection
+} from "paperback-extensions-common";
 
 export class Parser {
 
@@ -14,11 +23,14 @@ export class Parser {
         let genres: Tag[] = []
         let hentai = $('.manga-title-badges.adult').length > 0
 
+        // Grab genres and check for smut tag
         for (let obj of $('div.genres-content a').toArray()) {
-            let genre = $(obj).text()
-            if (genre.toLowerCase().includes('smut')) hentai = true
-            genres.push(createTag({label: genre, id: genre}))
+            let label = $(obj).text()
+            let id = $(obj).attr('href')?.split('/')[4] ?? label
+            if (label.toLowerCase().includes('smut')) hentai = true
+            genres.push(createTag({label: label, id: id}))
         }
+        let tagSections: TagSection[] = [createTagSection({id: '0', label: 'genres', tags: genres})]
 
         // If we cannot parse out the data-id for this title, we cannot complete subsequent requests
         if (!numericId) {
@@ -33,6 +45,7 @@ export class Parser {
             artist: artist,
             desc: summary,
             status: isOngoing ? MangaStatus.ONGOING : MangaStatus.COMPLETED,
+            tags: tagSections,
             rating: Number(rating),
             hentai: hentai
         })
@@ -88,6 +101,16 @@ export class Parser {
             pages: pages,
             longStrip: false
         })
+    }
+
+    parseTags($: CheerioSelector): TagSection[] {
+        let genres: Tag[] = []
+        for (let obj of $('ul.sub-menu li a').toArray()) {
+            let label = $(obj).text()
+            let id = $(obj).attr('href')?.split('/')[4] ?? label
+            genres.push(createTag({label: label, id: id}))
+        }
+        return [createTagSection({id: '0', label: 'genres', tags: genres})]
     }
 
     parseSearchResults($: CheerioSelector, source: any): MangaTile[] {

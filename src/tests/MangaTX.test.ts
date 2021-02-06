@@ -112,4 +112,10 @@ describe('MangaTX Tests', function () {
         expect(updates[0], "No updates").to.not.be.empty;
     })
 
+    it("Testing get tags", async () => {
+        let updates = await wrapper.getTags(source)
+        expect(updates, "No server response").to.exist
+        expect(updates, "Empty server response").to.not.be.empty
+    })
+
 })

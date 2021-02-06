@@ -5,7 +5,7 @@ const WEBTOON_DOMAIN = "https://www.webtoon.xyz"
 
 export const WebtoonXYZInfo: SourceInfo = {
     version: '1.0.0',
-    name: 'Webtoon.XYZ',
+    name: 'WebtoonXYZ',
     description: 'Extension that pulls manga from WebtoonXYZ.XYZ',
     author: 'GameFuzzy',
     authorWebsite: 'http://github.com/gamefuzzy',

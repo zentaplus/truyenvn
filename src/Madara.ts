@@ -8,7 +8,7 @@ import {
     MangaUpdates,
     PagedResults,
     SearchRequest,
-    Source,
+    Source, TagSection,
 } from "paperback-extensions-common"
 
 import {Parser} from './MadaraParser'
@@ -102,6 +102,17 @@ export abstract class Madara extends Source {
 
         return this.parser.parseChapterDetails($, mangaId, chapterId)
 
+    }
+
+    async getTags(): Promise<TagSection[] | null> {
+        const request = createRequestObject({
+            url: `${this.baseUrl}/`,
+            method: 'GET'
+        })
+
+        let data = await this.requestManager.schedule(request, 1)
+        let $ = this.cheerio.load(data.data)
+        return this.parser.parseTags($)
     }
 
     async searchRequest(query: SearchRequest, metadata: any): Promise<PagedResults> {
