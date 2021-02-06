@@ -333,17 +333,6 @@ class Madara extends paperback_extensions_common_1.Source {
          */
         this.sourceTraversalPathName = 'manga';
         /**
-         * By default, the homepage of a Madara is not its true homepage.
-         * Accessing the site directory and sorting by the latest title allows
-         * functions to step through the multiple pages easier, without a lot of custom
-         * logic for each source.
-         *
-         * This variable holds the latter half of the website path which is required to reach the
-         * directory page.
-         * Eg. 'webtoons' for https://www.webtoon.xyz/webtoons/?m_orderby=latest
-         */
-        this.homePage = 'manga';
-        /**
          * Some Madara sources have a different selector which is required in order to parse
          * out the popular manga. This defaults to the most common selector
          * but can be overridden by other sources which need it.
@@ -365,29 +354,6 @@ class Madara extends paperback_extensions_common_1.Source {
          */
         this.loadMoreSearchManga = true;
         this.parser = new MadaraParser_1.Parser();
-    }
-    // Time parsing logic
-    convertTime(timeAgo) {
-        var _a;
-        let time;
-        let trimmed = Number(((_a = /\d*/.exec(timeAgo)) !== null && _a !== void 0 ? _a : [])[0]);
-        trimmed = (trimmed == 0 && timeAgo.includes('a')) ? 1 : trimmed;
-        if (timeAgo.includes('mins') || timeAgo.includes('minutes') || timeAgo.includes('minute')) {
-            time = new Date(Date.now() - trimmed * 60000);
-        }
-        else if (timeAgo.includes('hours') || timeAgo.includes('hour')) {
-            time = new Date(Date.now() - trimmed * 3600000);
-        }
-        else if (timeAgo.includes('days') || timeAgo.includes('day')) {
-            time = new Date(Date.now() - trimmed * 86400000);
-        }
-        else if (timeAgo.includes('year') || timeAgo.includes('years')) {
-            time = new Date(Date.now() - trimmed * 31556952000);
-        }
-        else {
-            time = new Date(timeAgo);
-        }
-        return time;
     }
     getMangaDetails(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -432,59 +398,22 @@ class Madara extends paperback_extensions_common_1.Source {
         });
     }
     searchRequest(query, metadata) {
-        var _a;
+        var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
             // If we're supplied a page that we should be on, set our internal reference to that page. Otherwise, we start from page 0.
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 0;
-            const request = createRequestObject({
-                url: `${this.baseUrl}/wp-admin/admin-ajax.php/`,
-                method: 'POST',
-                headers: {
-                    "content-type": "application/x-www-form-urlencoded",
-                    "referer": this.baseUrl
-                },
-                data: this.urlEncodeObject({
-                    "action": "madara_load_more",
-                    "page": page,
-                    "template": "madara-core/content/content-search",
-                    "vars[s]": query.title,
-                    "vars[paged]": "1",
-                    "vars[posts_per_page]": "50"
-                })
-            });
+            const request = this.constructAjaxRequest(page, 50, '', (_b = query.title) !== null && _b !== void 0 ? _b : '');
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             let manga = this.parser.parseSearchResults($, this);
-            let mData = undefined;
-            if (manga.length > 49) {
-                mData = { page: (page + 1) };
+            let mData = { page: (page + 1) };
+            if (manga.length < 50) {
+                mData = undefined;
             }
             return createPagedResults({
                 results: manga,
                 metadata: typeof (mData === null || mData === void 0 ? void 0 : mData.page) === 'undefined' ? undefined : mData
             });
-        });
-    }
-    /**
-     * It's hard to capture a default logic for homepages. So for madara sources,
-     * instead we've provided a homesection reader for the base_url/source_traversal_path/ endpoint.
-     * This supports having paged views in almost all cases.
-     * @param sectionCallback
-     */
-    getHomePageSections(sectionCallback) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let section = createHomeSection({ id: "latest", title: "Latest Titles" });
-            sectionCallback(section);
-            const request = createRequestObject({
-                url: `${this.baseUrl}/${this.homePage}/?m_orderby=latest`,
-                method: 'GET',
-                cookies: [createCookie({ name: 'wpmanga-adault', value: "1", domain: this.baseUrl })]
-            });
-            let data = yield this.requestManager.schedule(request, 1);
-            let $ = this.cheerio.load(data.data);
-            let items = this.parser.parseHomeSection($, this);
-            section.items = items;
-            sectionCallback(section);
         });
     }
     filterUpdatedManga(mangaUpdatesFoundCallback, time, ids) {
@@ -493,26 +422,7 @@ class Madara extends paperback_extensions_common_1.Source {
             let page = 0;
             let loadNextPage = true;
             while (loadNextPage) {
-                const request = createRequestObject({
-                    url: `${this.baseUrl}/wp-admin/admin-ajax.php/`,
-                    method: 'POST',
-                    headers: {
-                        "content-type": "application/x-www-form-urlencoded",
-                        "referer": this.baseUrl
-                    },
-                    data: this.urlEncodeObject({
-                        "action": "madara_load_more",
-                        "page": page,
-                        "template": "madara-core/content/content-archive",
-                        "vars[orderby]": "meta_value_num",
-                        "vars[sidebar]": "right",
-                        "vars[post_type]": "wp-manga",
-                        "vars[meta_key]": "_latest_update",
-                        "vars[paged]": "1",
-                        "vars[posts_per_page]": "50",
-                        "vars[order]": "desc"
-                    })
-                });
+                const request = this.constructAjaxRequest(page, 50, '_latest_update', '');
                 let data = yield this.requestManager.schedule(request, 1);
                 let $ = this.cheerio.load(data.data);
                 let updatedManga = this.parser.filterUpdatedManga($, time, ids, this);
@@ -528,28 +438,96 @@ class Madara extends paperback_extensions_common_1.Source {
             }
         });
     }
+    /**
+     * It's hard to capture a default logic for homepages. So for Madara sources,
+     * instead we've provided a homesection reader for the base_url/source_traversal_path/ endpoint.
+     * This supports having paged views in almost all cases.
+     * @param sectionCallback
+     */
+    getHomePageSections(sectionCallback) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const sections = [
+                {
+                    request: this.constructAjaxRequest(0, 10, '_latest_update', ''),
+                    section: createHomeSection({
+                        id: '0',
+                        title: 'RECENTLY UPDATED',
+                        view_more: true,
+                    }),
+                },
+                {
+                    request: this.constructAjaxRequest(0, 10, '_wp_manga_week_views_value', ''),
+                    section: createHomeSection({
+                        id: '1',
+                        title: 'CURRENTLY TRENDING',
+                        view_more: true,
+                    })
+                },
+                {
+                    request: this.constructAjaxRequest(0, 10, '_wp_manga_views', ''),
+                    section: createHomeSection({
+                        id: '2',
+                        title: 'MOST POPULAR',
+                        view_more: true,
+                    })
+                },
+            ];
+            const promises = [];
+            for (const section of sections) {
+                // Let the app load empty sections
+                sectionCallback(section.section);
+                // Get the section data
+                promises.push(this.requestManager.schedule(section.request, 1).then(response => {
+                    const $ = this.cheerio.load(response.data);
+                    section.section.items = this.parser.parseHomeSection($, this);
+                    sectionCallback(section.section);
+                }));
+            }
+            // Make sure the function completes
+            yield Promise.all(promises);
+        });
+    }
     getViewMoreItems(homepageSectionId, metadata) {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
             // We only have one homepage section ID, so we don't need to worry about handling that any
-            let page = (_a = metadata.page) !== null && _a !== void 0 ? _a : 0; // Default to page 0
-            const request = createRequestObject({
-                url: `${this.baseUrl}/${this.homePage}/page/${page}/?m_orderby=latest`,
-                method: 'GET',
-                cookies: [createCookie({ name: 'wpmanga-adault', value: "1", domain: this.baseUrl })]
-            });
+            let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 0; // Default to page 0
+            let sortBy = '';
+            switch (homepageSectionId) {
+                case '0': {
+                    sortBy = `_latest_update`;
+                    break;
+                }
+                case '1': {
+                    sortBy = `_wp_manga_week_views_value`;
+                    break;
+                }
+                case '2': {
+                    sortBy = `_wp_manga_views`;
+                    break;
+                }
+                default:
+                    return Promise.resolve(null);
+            }
+            const request = this.constructAjaxRequest(page, 50, sortBy, '');
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             let items = this.parser.parseHomeSection($, this);
             // Set up to go to the next page. If we are on the last page, remove the logic.
-            metadata.page = page + 1;
-            if (!$('a.last')) {
-                metadata = undefined;
+            let mData = { page: (page + 1) };
+            if (items.length < 50) {
+                mData = undefined;
             }
             return createPagedResults({
                 results: items,
-                metadata: metadata
+                metadata: mData
             });
+        });
+    }
+    cloudflareBypassRequest() {
+        return createRequestObject({
+            url: `${this.baseUrl}`,
+            method: 'GET',
         });
     }
     // Only used in the test wrapper
@@ -569,16 +547,64 @@ class Madara extends paperback_extensions_common_1.Source {
             return numericId;
         });
     }
-    decodeHTMLEntity(str) {
-        return str.replace(/&#(\d+);/g, function (match, dec) {
-            return String.fromCharCode(dec);
+    /**
+     * Constructs requests to be sent to the Madara /admin-ajax.php/ endpoint.
+     */
+    constructAjaxRequest(page, postsPerPage, meta_key, searchQuery) {
+        let isSearch = searchQuery != '';
+        let data = {
+            "action": "madara_load_more",
+            "page": page,
+            "vars[paged]": "1",
+            "vars[posts_per_page]": postsPerPage,
+        };
+        if (isSearch) {
+            data["vars[s]"] = searchQuery;
+            data["template"] = "madara-core/content/content-search";
+        }
+        else {
+            data["template"] = "madara-core/content/content-archive";
+            data["vars[orderby]"] = "meta_value_num";
+            data["vars[sidebar]"] = "right";
+            data["vars[post_type]"] = "wp-manga";
+            data["vars[meta_key]"] = meta_key;
+            data["vars[order]"] = "desc";
+        }
+        return createRequestObject({
+            url: `${this.baseUrl}/wp-admin/admin-ajax.php/`,
+            method: 'POST',
+            headers: {
+                "content-type": "application/x-www-form-urlencoded",
+                "referer": this.baseUrl
+            },
+            data: this.urlEncodeObject(data),
+            cookies: [createCookie({ name: 'wpmanga-adault', value: "1", domain: this.baseUrl })]
         });
     }
-    cloudflareBypassRequest() {
-        return createRequestObject({
-            url: `${this.baseUrl}`,
-            method: 'GET',
-        });
+    /**
+     * Parses a time string from a Madara source into a Date object.
+     */
+    convertTime(timeAgo) {
+        var _a;
+        let time;
+        let trimmed = Number(((_a = /\d*/.exec(timeAgo)) !== null && _a !== void 0 ? _a : [])[0]);
+        trimmed = (trimmed == 0 && timeAgo.includes('a')) ? 1 : trimmed;
+        if (timeAgo.includes('mins') || timeAgo.includes('minutes') || timeAgo.includes('minute')) {
+            time = new Date(Date.now() - trimmed * 60000);
+        }
+        else if (timeAgo.includes('hours') || timeAgo.includes('hour')) {
+            time = new Date(Date.now() - trimmed * 3600000);
+        }
+        else if (timeAgo.includes('days') || timeAgo.includes('day')) {
+            time = new Date(Date.now() - trimmed * 86400000);
+        }
+        else if (timeAgo.includes('year') || timeAgo.includes('years')) {
+            time = new Date(Date.now() - trimmed * 31556952000);
+        }
+        else {
+            time = new Date(timeAgo);
+        }
+        return time;
     }
 }
 exports.Madara = Madara;
