@@ -16,7 +16,7 @@ export class Parser {
         let title = this.decodeHTMLEntity($('div.post-title h1').first().text().replace(/NEW/, '').replace(/HOT/, '').replace('\\n', '').trim())
         let author = this.decodeHTMLEntity($('div.author-content').first().text().replace("\\n", '').trim()).replace('Updating', 'Unknown')
         let artist = this.decodeHTMLEntity($('div.artist-content').first().text().replace("\\n", '').trim()).replace('Updating', 'Unknown')
-        let summary = this.decodeHTMLEntity($('p', $('div.description-summary')).text())
+        let summary = this.decodeHTMLEntity($('div.description-summary').first().text()).replace('Show more', '').trim()
         let image = $('div.summary_image img').first().attr('data-src') ?? ''
         let rating = $('span.total_votes').text().replace('Your Rating', '')
         let isOngoing = $('div.summary-content', $('div.post-content_item').last()).text().toLowerCase().trim() == "ongoing"
@@ -43,9 +43,9 @@ export class Parser {
             image: image,
             author: author,
             artist: artist,
+            tags: tagSections,
             desc: summary,
             status: isOngoing ? MangaStatus.ONGOING : MangaStatus.COMPLETED,
-            tags: tagSections,
             rating: Number(rating),
             hentai: hentai
         })
@@ -162,11 +162,10 @@ export class Parser {
         for (let obj of $('div.manga').toArray()) {
             let id = $('a', $('h3.h5', obj)).attr('href')?.replace(`${source.baseUrl}/${source.sourceTraversalPathName}/`, '').replace('/', '') ?? ''
             let mangaTime: Date
-            if($('.c-new-tag a', obj).length > 0) {
+            if ($('.c-new-tag a', obj).length > 0) {
                 // Use blinking red NEW tag
                 mangaTime = source.convertTime($('.c-new-tag a', obj).attr('title') ?? '')
-            }
-            else {
+            } else {
                 // Use span
                 mangaTime = source.convertTime($('span', $('.chapter-item', obj).first()).last().text() ?? '')
             }
