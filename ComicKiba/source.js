@@ -310,6 +310,39 @@ __exportStar(require("./OAuth"), exports);
 
 },{"./Chapter":5,"./ChapterDetails":6,"./Constants":7,"./HomeSection":8,"./Languages":9,"./Manga":10,"./MangaTile":11,"./MangaUpdate":12,"./OAuth":13,"./PagedResults":14,"./RequestHeaders":15,"./RequestManager":16,"./RequestObject":17,"./ResponseObject":18,"./SearchRequest":19,"./SourceInfo":20,"./SourceTag":21,"./TagSection":22,"./TrackObject":23}],25:[function(require,module,exports){
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ComicKiba = exports.ComicKibaInfo = void 0;
+const paperback_extensions_common_1 = require("paperback-extensions-common");
+const Madara_1 = require("../Madara");
+const COMICKIBA_DOMAIN = "https://comickiba.com";
+exports.ComicKibaInfo = {
+    version: '1.0.0',
+    name: 'ComicKiba',
+    description: 'Extension that pulls manga from comickiba.com',
+    author: 'GameFuzzy',
+    authorWebsite: 'http://github.com/gamefuzzy',
+    icon: "icon.png",
+    hentaiSource: false,
+    websiteBaseURL: COMICKIBA_DOMAIN,
+    sourceTags: [
+        {
+            text: "Notifications",
+            type: paperback_extensions_common_1.TagType.GREEN
+        }
+    ]
+};
+class ComicKiba extends Madara_1.Madara {
+    constructor() {
+        super(...arguments);
+        this.baseUrl = COMICKIBA_DOMAIN;
+        this.languageCode = paperback_extensions_common_1.LanguageCode.ENGLISH;
+        //chapterDetailsSelector: string = "li.blocks-gallery-item img:nth-child(1), div.reading-content p > img, .read-container .reading-content img"
+    }
+}
+exports.ComicKiba = ComicKiba;
+
+},{"../Madara":26,"paperback-extensions-common":4}],26:[function(require,module,exports){
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -610,7 +643,7 @@ class Madara extends paperback_extensions_common_1.Source {
 }
 exports.Madara = Madara;
 
-},{"./MadaraParser":26,"paperback-extensions-common":4}],26:[function(require,module,exports){
+},{"./MadaraParser":27,"paperback-extensions-common":4}],27:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Parser = void 0;
@@ -800,38 +833,5 @@ class Parser {
 }
 exports.Parser = Parser;
 
-},{"paperback-extensions-common":4}],27:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.WebtoonXYZ = exports.WebtoonXYZInfo = void 0;
-const paperback_extensions_common_1 = require("paperback-extensions-common");
-const Madara_1 = require("../Madara");
-const WEBTOON_DOMAIN = "https://www.webtoon.xyz";
-exports.WebtoonXYZInfo = {
-    version: '1.0.0',
-    name: 'WebtoonXYZ',
-    description: 'Extension that pulls manga from ComicKiba.XYZ',
-    author: 'GameFuzzy',
-    authorWebsite: 'http://github.com/gamefuzzy',
-    icon: "icon.png",
-    hentaiSource: false,
-    websiteBaseURL: WEBTOON_DOMAIN,
-    sourceTags: [
-        {
-            text: "Notifications",
-            type: paperback_extensions_common_1.TagType.GREEN
-        }
-    ]
-};
-class WebtoonXYZ extends Madara_1.Madara {
-    constructor() {
-        super(...arguments);
-        this.baseUrl = WEBTOON_DOMAIN;
-        this.languageCode = paperback_extensions_common_1.LanguageCode.ENGLISH;
-        this.sourceTraversalPathName = 'read';
-    }
-}
-exports.WebtoonXYZ = WebtoonXYZ;
-
-},{"../Madara":25,"paperback-extensions-common":4}]},{},[27])(27)
+},{"paperback-extensions-common":4}]},{},[25])(25)
 });

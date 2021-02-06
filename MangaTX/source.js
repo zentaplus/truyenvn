@@ -333,22 +333,12 @@ class Madara extends paperback_extensions_common_1.Source {
          */
         this.sourceTraversalPathName = 'manga';
         /**
-         * Some Madara sources have a different selector which is required in order to parse
-         * out the popular manga. This defaults to the most common selector
-         * but can be overridden by other sources which need it.
-         */
-        this.popularMangaSelector = "div.page-item-detail";
-        /**
-         * Much like {@link popularMangaSelector} this will default to the most used CheerioJS
-         * selector to extract URLs from popular manga. This is available to be overridden.
-         */
-        this.popularMangaUrlSelector = "div.post-title a";
-        /**
          * Different Madara sources might have a slightly different selector which is required to parse out
          * each manga object while on a search result page. This is the selector
          * which is looped over. This may be overridden if required.
          */
         this.searchMangaSelector = "div.c-tabs-item__content";
+        this.chapterDetailsSelector = "div.page-break";
         /**
          * Set to false if your source has individual buttons for each page as opposed to a 'LOAD MORE' button
          */
@@ -394,7 +384,7 @@ class Madara extends paperback_extensions_common_1.Source {
             });
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
-            return this.parser.parseChapterDetails($, mangaId, chapterId);
+            return this.parser.parseChapterDetails($, mangaId, chapterId, this.chapterDetailsSelector);
         });
     }
     getTags() {
@@ -665,36 +655,34 @@ class Parser {
         });
     }
     parseChapterList($, mangaId, source) {
-        var _a, _b, _c, _d, _e;
+        var _a, _b, _c, _d, _e, _f;
         let chapters = [];
         // Capture the manga title, as this differs from the ID which this function is fed
-        let realTitle = (_a = $('a', $('li.wp-manga-chapter  ').first()).attr('href')) === null || _a === void 0 ? void 0 : _a.replace(`${source.baseUrl}/${source.sourceTraversalPathName}/`, '').replace(/\/chapter.*/, '');
+        let realTitle = (_a = $('a', $('li.wp-manga-chapter  ').first()).attr('href')) === null || _a === void 0 ? void 0 : _a.replace(`${source.baseUrl}/${source.sourceTraversalPathName}/`, '').toLowerCase().replace(/\/chapter.*/, '');
         if (!realTitle) {
             throw (`Failed to parse the human-readable title for ${mangaId}`);
         }
         // For each available chapter..
         for (let obj of $('li.wp-manga-chapter  ').toArray()) {
             let id = ($('a', $(obj)).first().attr('href') || '').replace(`${source.baseUrl}/${source.sourceTraversalPathName}/${realTitle}/`, '').replace('/', '');
-            let chapNum = (_b = $('a', $(obj)).first().attr('href')) === null || _b === void 0 ? void 0 : _b.match(/\/chapter-(\d*)/);
-            if (!chapNum)
-                continue;
-            let releaseDate = $('i', $(obj)).length > 0 ? $('i', $(obj)).text() : (_c = $('.c-new-tag a', $(obj)).attr('title')) !== null && _c !== void 0 ? _c : '';
+            let chapNum = (_d = (_c = (_b = $('a', $(obj)).first().attr('href')) === null || _b === void 0 ? void 0 : _b.toLowerCase()) === null || _c === void 0 ? void 0 : _c.match(/\/chapter-(\d*)/)) !== null && _d !== void 0 ? _d : '';
+            let releaseDate = $('i', $(obj)).length > 0 ? $('i', $(obj)).text() : (_e = $('.c-new-tag a', $(obj)).attr('title')) !== null && _e !== void 0 ? _e : '';
             if (typeof id === 'undefined') {
                 throw (`Could not parse out ID when getting chapters for ${mangaId}`);
             }
             chapters.push(createChapter({
                 id: id,
                 mangaId: realTitle !== null && realTitle !== void 0 ? realTitle : '',
-                langCode: (_d = source.languageCode) !== null && _d !== void 0 ? _d : paperback_extensions_common_1.LanguageCode.UNKNOWN,
-                chapNum: (_e = Number(chapNum[1])) !== null && _e !== void 0 ? _e : 0,
+                langCode: (_f = source.languageCode) !== null && _f !== void 0 ? _f : paperback_extensions_common_1.LanguageCode.UNKNOWN,
+                chapNum: Number(chapNum[1]),
                 time: source.convertTime(releaseDate)
             }));
         }
         return this.sortChapters(chapters);
     }
-    parseChapterDetails($, mangaId, chapterId) {
+    parseChapterDetails($, mangaId, chapterId, selector) {
         let pages = [];
-        for (let obj of $('div.page-break').toArray()) {
+        for (let obj of $(selector).toArray()) {
             let page = $('img', $(obj)).attr('data-src');
             if (!page) {
                 throw (`Could not parse page for ${mangaId}/${chapterId}`);
@@ -726,6 +714,8 @@ class Parser {
             let title = createIconText({ text: this.decodeHTMLEntity((_b = $('a', $(obj)).attr('title')) !== null && _b !== void 0 ? _b : '') });
             let image = $('img', $(obj)).attr('data-src');
             if (typeof id === 'undefined' || typeof image === 'undefined' || typeof title.text === 'undefined') {
+                if (id.includes('autopost'))
+                    continue;
                 // Something went wrong with our parsing, return a detailed error
                 throw (`Failed to parse searchResult for ${source.baseUrl} using ${source.searchMangaSelector} as a loop selector`);
             }
