@@ -3,10 +3,10 @@ import {Madara} from '../Madara'
 
 const WEBTOON_DOMAIN = "https://www.webtoon.xyz"
 
-export const WebtoonInfo: SourceInfo = {
+export const WebtoonXYZInfo: SourceInfo = {
     version: '1.0.0',
-    name: 'Webtoon.xyz',
-    description: 'Extension that pulls manga from webtoon.xyz',
+    name: 'Webtoon.XYZ',
+    description: 'Extension that pulls manga from Webtoon.XYZ',
     author: 'GameFuzzy',
     authorWebsite: 'http://github.com/gamefuzzy',
     icon: "icon.png",
@@ -20,7 +20,7 @@ export const WebtoonInfo: SourceInfo = {
     ]
 }
 
-export class Webtoon extends Madara {
+export class WebtoonXYZ extends Madara {
     baseUrl: string = WEBTOON_DOMAIN
     languageCode: LanguageCode = LanguageCode.ENGLISH
     sourceTraversalPathName: string = 'read'
