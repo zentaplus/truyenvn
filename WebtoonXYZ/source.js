@@ -632,7 +632,7 @@ class Parser {
         let title = this.decodeHTMLEntity($('div.post-title h1').first().text().replace(/NEW/, '').replace(/HOT/, '').replace('\\n', '').trim());
         let author = this.decodeHTMLEntity($('div.author-content').first().text().replace("\\n", '').trim()).replace('Updating', 'Unknown');
         let artist = this.decodeHTMLEntity($('div.artist-content').first().text().replace("\\n", '').trim()).replace('Updating', 'Unknown');
-        let summary = this.decodeHTMLEntity($('p', $('div.description-summary')).text());
+        let summary = this.decodeHTMLEntity($('div.description-summary').first().text()).replace('Show more', '').trim();
         let image = (_a = $('div.summary_image img').first().attr('data-src')) !== null && _a !== void 0 ? _a : '';
         let rating = $('span.total_votes').text().replace('Your Rating', '');
         let isOngoing = $('div.summary-content', $('div.post-content_item').last()).text().toLowerCase().trim() == "ongoing";
@@ -657,9 +657,9 @@ class Parser {
             image: image,
             author: author,
             artist: artist,
+            tags: tagSections,
             desc: summary,
             status: isOngoing ? paperback_extensions_common_1.MangaStatus.ONGOING : paperback_extensions_common_1.MangaStatus.COMPLETED,
-            tags: tagSections,
             rating: Number(rating),
             hentai: hentai
         });
