@@ -94,7 +94,7 @@ describe('MangaTX Tests', function () {
 
 
     it("Testing home page results for latest titles", async() => {
-        let results = await wrapper.getViewMoreItems(source, "latest", {}, 3)
+        let results = await wrapper.getViewMoreItems(source, "0", {}, 3)
 
         expect(results, "No results whatsoever for this section").to.exist
         expect(results, "No results whatsoever for this section").to.exist
@@ -104,4 +104,12 @@ describe('MangaTX Tests', function () {
         expect(data.image, "No image present").to.exist
         expect(data.title.text, "No title present").to.exist
     })
+
+    it("Testing Notifications", async () => {
+        let updates = await wrapper.filterUpdatedManga(source, new Date("2021-02-01"), [mangaId])
+        expect(updates, "No server response").to.exist
+        expect(updates, "Empty server response").to.not.be.empty
+        expect(updates[0], "No updates").to.not.be.empty;
+    })
+
 })

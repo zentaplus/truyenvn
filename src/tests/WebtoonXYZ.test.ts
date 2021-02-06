@@ -1,13 +1,13 @@
 import cheerio from 'cheerio'
 import { MadaraAPIWrapper } from '../MadaraAPIWrapper'
 import { Madara } from '../Madara'
-import { Webtoon } from '../Webtoon/Webtoon'
+import { WebtoonXYZ } from '../WebtoonXYZ/WebtoonXYZ'
 
-describe('Webtoon Tests', function () {
+describe('WebtoonXYZ Tests', function () {
 
 
     var wrapper: MadaraAPIWrapper = new MadaraAPIWrapper();
-    var source: Madara = new Webtoon(cheerio);
+    var source: Madara = new WebtoonXYZ(cheerio);
     var chai = require('chai'), expect = chai.expect, should = chai.should();
     var chaiAsPromised = require('chai-as-promised');
     chai.use(chaiAsPromised);
@@ -94,7 +94,7 @@ describe('Webtoon Tests', function () {
 
 
     it("Testing home page results for latest titles", async() => {
-        let results = await wrapper.getViewMoreItems(source, "latest", {}, 3)
+        let results = await wrapper.getViewMoreItems(source, "0", {}, 3)
 
         expect(results, "No results whatsoever for this section").to.exist
         expect(results, "No results whatsoever for this section").to.exist
