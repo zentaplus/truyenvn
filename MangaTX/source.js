@@ -397,6 +397,17 @@ class Madara extends paperback_extensions_common_1.Source {
             return this.parser.parseChapterDetails($, mangaId, chapterId);
         });
     }
+    getTags() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const request = createRequestObject({
+                url: `${this.baseUrl}/`,
+                method: 'GET'
+            });
+            let data = yield this.requestManager.schedule(request, 1);
+            let $ = this.cheerio.load(data.data);
+            return this.parser.parseTags($);
+        });
+    }
     searchRequest(query, metadata) {
         var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
@@ -616,7 +627,7 @@ exports.Parser = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 class Parser {
     parseMangaDetails($, mangaId) {
-        var _a;
+        var _a, _b, _c;
         let numericId = $('a.wp-manga-action-button').attr('data-post');
         let title = this.decodeHTMLEntity($('div.post-title h1').first().text().replace(/NEW/, '').replace(/HOT/, '').replace('\\n', '').trim());
         let author = this.decodeHTMLEntity($('div.author-content').first().text().replace("\\n", '').trim()).replace('Updating', 'Unknown');
@@ -627,12 +638,15 @@ class Parser {
         let isOngoing = $('div.summary-content', $('div.post-content_item').last()).text().toLowerCase().trim() == "ongoing";
         let genres = [];
         let hentai = $('.manga-title-badges.adult').length > 0;
+        // Grab genres and check for smut tag
         for (let obj of $('div.genres-content a').toArray()) {
-            let genre = $(obj).text();
-            if (genre.toLowerCase().includes('smut'))
+            let label = $(obj).text();
+            let id = (_c = (_b = $(obj).attr('href')) === null || _b === void 0 ? void 0 : _b.split('/')[4]) !== null && _c !== void 0 ? _c : label;
+            if (label.toLowerCase().includes('smut'))
                 hentai = true;
-            genres.push(createTag({ label: genre, id: genre }));
+            genres.push(createTag({ label: label, id: id }));
         }
+        let tagSections = [createTagSection({ id: '0', label: 'genres', tags: genres })];
         // If we cannot parse out the data-id for this title, we cannot complete subsequent requests
         if (!numericId) {
             throw (`Could not parse out the data-id for ${mangaId} - This method might need overridden in the implementing source`);
@@ -645,6 +659,7 @@ class Parser {
             artist: artist,
             desc: summary,
             status: isOngoing ? paperback_extensions_common_1.MangaStatus.ONGOING : paperback_extensions_common_1.MangaStatus.COMPLETED,
+            tags: tagSections,
             rating: Number(rating),
             hentai: hentai
         });
@@ -692,6 +707,16 @@ class Parser {
             pages: pages,
             longStrip: false
         });
+    }
+    parseTags($) {
+        var _a, _b;
+        let genres = [];
+        for (let obj of $('ul.sub-menu li a').toArray()) {
+            let label = $(obj).text();
+            let id = (_b = (_a = $(obj).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/')[4]) !== null && _b !== void 0 ? _b : label;
+            genres.push(createTag({ label: label, id: id }));
+        }
+        return [createTagSection({ id: '0', label: 'genres', tags: genres })];
     }
     parseSearchResults($, source) {
         var _a, _b;
