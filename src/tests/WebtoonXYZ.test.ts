@@ -3,7 +3,7 @@ import { MadaraAPIWrapper } from '../MadaraAPIWrapper'
 import { Madara } from '../Madara'
 import { WebtoonXYZ } from '../WebtoonXYZ/WebtoonXYZ'
 
-describe('ComicKiba Tests', function () {
+describe('WebtoonXYZ Tests', function () {
 
 
     var wrapper: MadaraAPIWrapper = new MadaraAPIWrapper();
