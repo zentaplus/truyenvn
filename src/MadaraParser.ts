@@ -86,7 +86,9 @@ export class Parser {
         let pages: string[] = []
 
         for (let obj of $(selector).toArray()) {
-            let page = $('img', $(obj)).attr('data-src')
+            let imageObj = $('img', $(obj))
+            let hasDataSrc = typeof imageObj.attr('data-src') != 'undefined'
+            let page = hasDataSrc ? imageObj.attr('data-src') : imageObj.attr('src')
 
             if (!page) {
                 throw(`Could not parse page for ${mangaId}/${chapterId}`)
@@ -102,12 +104,21 @@ export class Parser {
         })
     }
 
-    parseTags($: CheerioSelector): TagSection[] {
+    parseTags($: CheerioSelector, advancedSearch: boolean): TagSection[] {
         let genres: Tag[] = []
-        for (let obj of $('ul.sub-menu li a').toArray()) {
-            let label = $(obj).text()
-            let id = $(obj).attr('href')?.split('/')[4] ?? label
-            genres.push(createTag({label: label, id: id}))
+        if(advancedSearch) {
+            for (let obj of $('.checkbox-group div label').toArray()) {
+                let label = $(obj).text().trim()
+                let id = $(obj).attr('for') ?? label
+                genres.push(createTag({label: label, id: id}))
+            }
+        }
+        else {
+            for (let obj of $('.menu-item-object-wp-manga-genre a', $('.second-menu')).toArray()) {
+                let label = $(obj).text().trim()
+                let id = $(obj).attr('href')?.split('/')[4] ?? label
+                genres.push(createTag({label: label, id: id}))
+            }
         }
         return [createTagSection({id: '0', label: 'genres', tags: genres})]
     }
@@ -120,7 +131,7 @@ export class Parser {
             let image = $('img', $(obj)).attr('data-src')
 
             if (typeof id === 'undefined' || typeof image === 'undefined' || typeof title.text === 'undefined') {
-                if(id.includes('autopost')) continue
+                if(id.includes(source.baseUrl.replace('/', ''))) continue
                 // Something went wrong with our parsing, return a detailed error
                 throw(`Failed to parse searchResult for ${source.baseUrl} using ${source.searchMangaSelector} as a loop selector`)
             }
@@ -159,7 +170,7 @@ export class Parser {
         let passedReferenceTime = false
         let updatedManga: string[] = []
 
-        for (let obj of $('div.manga').toArray()) {
+        for (let obj of $('div.page-item-detail').toArray()) {
             let id = $('a', $('h3.h5', obj)).attr('href')?.replace(`${source.baseUrl}/${source.sourceTraversalPathName}/`, '').replace('/', '') ?? ''
             let mangaTime: Date
             if ($('.c-new-tag a', obj).length > 0) {

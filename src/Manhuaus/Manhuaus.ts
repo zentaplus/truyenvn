@@ -1,17 +1,17 @@
 import {LanguageCode, SourceInfo, TagType} from "paperback-extensions-common";
 import {Madara} from '../Madara'
 
-const COMICKIBA_DOMAIN = "https://comickiba.com"
+const MANHUAUS_DOMAIN = "https://manhuaus.com"
 
-export const ComicKibaInfo: SourceInfo = {
+export const ManhuausInfo: SourceInfo = {
     version: '1.0.0',
-    name: 'ComicKiba',
-    description: 'Extension that pulls manga from comickiba.com',
+    name: 'ManhuaUS',
+    description: 'Extension that pulls manga from manhuaus.com',
     author: 'GameFuzzy',
     authorWebsite: 'http://github.com/gamefuzzy',
     icon: "icon.png",
     hentaiSource: false,
-    websiteBaseURL: COMICKIBA_DOMAIN,
+    websiteBaseURL: MANHUAUS_DOMAIN,
     sourceTags: [
         {
             text: "Notifications",
@@ -20,8 +20,9 @@ export const ComicKibaInfo: SourceInfo = {
     ]
 }
 
-export class ComicKiba extends Madara {
-    baseUrl: string = COMICKIBA_DOMAIN
+export class Manhuaus extends Madara {
+    baseUrl: string = MANHUAUS_DOMAIN
     languageCode: LanguageCode = LanguageCode.ENGLISH
     hasAdvancedSearchPage = true
+    chapterDetailsSelector: string = 'li.blocks-gallery-item'
 }

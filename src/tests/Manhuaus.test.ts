@@ -1,13 +1,13 @@
 import cheerio from 'cheerio'
 import { MadaraAPIWrapper } from '../MadaraAPIWrapper'
 import { Madara } from '../Madara'
-import { WebtoonXYZ } from '../WebtoonXYZ/WebtoonXYZ'
+import { Manhuaus } from '../Manhuaus/Manhuaus'
 
-describe('WebtoonXYZ Tests', function () {
+describe('Manhuaus Tests', function () {
 
 
     var wrapper: MadaraAPIWrapper = new MadaraAPIWrapper();
-    var source: Madara = new WebtoonXYZ(cheerio);
+    var source: Madara = new Manhuaus(cheerio);
     var chai = require('chai'), expect = chai.expect, should = chai.should();
     var chaiAsPromised = require('chai-as-promised');
     chai.use(chaiAsPromised);
@@ -17,7 +17,7 @@ describe('WebtoonXYZ Tests', function () {
      * Try to choose a manga which is updated frequently, so that the historical checking test can
      * return proper results, as it is limited to searching 30 days back due to extremely long processing times otherwise.
      */
-    var mangaId = "volcanic-age";
+    var mangaId = "to-be-immortal-for-9000-years-old";
     var mangaNumericId = ''
 
     // Grab the ID automatically
@@ -73,7 +73,7 @@ describe('WebtoonXYZ Tests', function () {
 
     it("Testing search", async () => {
         let testSearch = createSearchRequest({
-            title: 'Hero'
+            title: 'he'
         });
 
         let search = await wrapper.searchRequest(source, testSearch, {page: 0});
@@ -94,7 +94,7 @@ describe('WebtoonXYZ Tests', function () {
 
 
     it("Testing home page results for latest titles", async() => {
-        let results = await wrapper.getViewMoreItems(source, "0", {}, 3)
+        let results = await wrapper.getViewMoreItems(source, "1", {}, 3)
 
         expect(results, "No results whatsoever for this section").to.exist
         expect(results, "No results whatsoever for this section").to.exist
@@ -106,7 +106,7 @@ describe('WebtoonXYZ Tests', function () {
     })
 
     it("Testing Notifications", async () => {
-        let updates = await wrapper.filterUpdatedManga(source, new Date("2021-01-01"), [mangaId])
+        let updates = await wrapper.filterUpdatedManga(source, new Date("2021-02-01"), [mangaId])
         expect(updates, "No server response").to.exist
         expect(updates, "Empty server response").to.not.be.empty
         expect(updates[0], "No updates").to.not.be.empty;

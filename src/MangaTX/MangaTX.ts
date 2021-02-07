@@ -23,4 +23,5 @@ export const MangaTXInfo: SourceInfo = {
 export class MangaTX extends Madara {
     baseUrl: string = MANGATX_DOMAIN
     languageCode: LanguageCode = LanguageCode.ENGLISH
+    hasAdvancedSearchPage = true
 }

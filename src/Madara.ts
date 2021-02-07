@@ -6,7 +6,7 @@ import {
     Manga,
     MangaTile,
     MangaUpdates,
-    PagedResults,
+    PagedResults, RequestHeaders,
     SearchRequest,
     Source, TagSection,
 } from "paperback-extensions-common"
@@ -30,13 +30,26 @@ export abstract class Madara extends Source {
      * Used in all functions.
      */
     sourceTraversalPathName: string = 'manga'
+
     /**
      * Different Madara sources might have a slightly different selector which is required to parse out
      * each manga object while on a search result page. This is the selector
      * which is looped over. This may be overridden if required.
      */
     searchMangaSelector: string = "div.c-tabs-item__content"
+
+    /**
+     * Set to true if your source has advanced search functionality built in.
+     */
+    hasAdvancedSearchPage: boolean = false
+
+    /**
+     * Different Madara sources might have a slightly different selector which is required to parse out
+     * each page while on a chapter page. This is the selector
+     * which is looped over. This may be overridden if required.
+     */
     chapterDetailsSelector: string = "div.page-break"
+
     /**
      * Set to false if your source has individual buttons for each page as opposed to a 'LOAD MORE' button
      */
@@ -44,7 +57,6 @@ export abstract class Madara extends Source {
 
 
     parser = new Parser()
-
     async getMangaDetails(mangaId: string): Promise<Manga> {
         const request = createRequestObject({
             url: `${this.baseUrl}/${this.sourceTraversalPathName}/${mangaId}`,
@@ -60,11 +72,10 @@ export abstract class Madara extends Source {
 
     async getChapters(mangaId: string): Promise<Chapter[]> {
         const request = createRequestObject({
-            url: `${this.baseUrl}/wp-admin/admin-ajax.php/`,
+            url: `${this.baseUrl}/wp-admin/admin-ajax.php`,
             method: 'POST',
             headers: {
-                "content-type": "application/x-www-form-urlencoded",
-                "referer": this.baseUrl
+                "content-type": "application/x-www-form-urlencoded"
             },
             data: this.urlEncodeObject({
                 "action": "manga_get_chapters",
@@ -93,14 +104,23 @@ export abstract class Madara extends Source {
     }
 
     async getTags(): Promise<TagSection[] | null> {
-        const request = createRequestObject({
-            url: `${this.baseUrl}/`,
-            method: 'GET'
-        })
+        let request
+        if(this.hasAdvancedSearchPage) {
+            request = createRequestObject({
+                url: `${this.baseUrl}/?s=&post_type=wp-manga`,
+                method: 'GET'
+            })
+        }
+        else {
+            request = createRequestObject({
+                url: `${this.baseUrl}/`,
+                method: 'GET'
+            })
+        }
 
         let data = await this.requestManager.schedule(request, 1)
         let $ = this.cheerio.load(data.data)
-        return this.parser.parseTags($)
+        return this.parser.parseTags($, this.hasAdvancedSearchPage)
     }
 
     async searchRequest(query: SearchRequest, metadata: any): Promise<PagedResults> {
@@ -282,11 +302,10 @@ export abstract class Madara extends Source {
         }
 
         return createRequestObject({
-            url: `${this.baseUrl}/wp-admin/admin-ajax.php/`,
+            url: `${this.baseUrl}/wp-admin/admin-ajax.php`,
             method: 'POST',
             headers: {
-                "content-type": "application/x-www-form-urlencoded",
-                "referer": this.baseUrl
+                "content-type": "application/x-www-form-urlencoded"
             },
             data: this.urlEncodeObject(data),
             cookies: [createCookie({name: 'wpmanga-adault', value: "1", domain: this.baseUrl})]
@@ -313,6 +332,12 @@ export abstract class Madara extends Source {
         }
 
         return time
+    }
+
+    globalRequestHeaders(): RequestHeaders {
+        return {
+            Referer: this.baseUrl
+        }
     }
 
 }
