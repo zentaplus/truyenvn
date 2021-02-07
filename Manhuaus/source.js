@@ -835,19 +835,19 @@ exports.Parser = Parser;
 },{"paperback-extensions-common":4}],27:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.WebtoonXYZ = exports.WebtoonXYZInfo = void 0;
+exports.Manhuaus = exports.ManhuausInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const Madara_1 = require("../Madara");
-const WEBTOON_DOMAIN = "https://www.webtoon.xyz";
-exports.WebtoonXYZInfo = {
+const MANHUAUS_DOMAIN = "https://manhuaus.com";
+exports.ManhuausInfo = {
     version: '1.0.0',
-    name: 'WebtoonXYZ',
-    description: 'Extension that pulls manga from Webtoon.XYZ',
+    name: 'ManhuaUS',
+    description: 'Extension that pulls manga from manhuaus.com',
     author: 'GameFuzzy',
     authorWebsite: 'http://github.com/gamefuzzy',
     icon: "icon.png",
     hentaiSource: false,
-    websiteBaseURL: WEBTOON_DOMAIN,
+    websiteBaseURL: MANHUAUS_DOMAIN,
     sourceTags: [
         {
             text: "Notifications",
@@ -855,15 +855,16 @@ exports.WebtoonXYZInfo = {
         }
     ]
 };
-class WebtoonXYZ extends Madara_1.Madara {
+class Manhuaus extends Madara_1.Madara {
     constructor() {
         super(...arguments);
-        this.baseUrl = WEBTOON_DOMAIN;
+        this.baseUrl = MANHUAUS_DOMAIN;
         this.languageCode = paperback_extensions_common_1.LanguageCode.ENGLISH;
-        this.sourceTraversalPathName = 'read';
+        this.hasAdvancedSearchPage = true;
+        this.chapterDetailsSelector = 'li.blocks-gallery-item';
     }
 }
-exports.WebtoonXYZ = WebtoonXYZ;
+exports.Manhuaus = Manhuaus;
 
 },{"../Madara":25,"paperback-extensions-common":4}]},{},[27])(27)
 });

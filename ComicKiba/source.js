@@ -336,7 +336,7 @@ class ComicKiba extends Madara_1.Madara {
         super(...arguments);
         this.baseUrl = COMICKIBA_DOMAIN;
         this.languageCode = paperback_extensions_common_1.LanguageCode.ENGLISH;
-        //chapterDetailsSelector: string = "li.blocks-gallery-item img:nth-child(1), div.reading-content p > img, .read-container .reading-content img"
+        this.hasAdvancedSearchPage = true;
     }
 }
 exports.ComicKiba = ComicKiba;
@@ -371,6 +371,15 @@ class Madara extends paperback_extensions_common_1.Source {
          * which is looped over. This may be overridden if required.
          */
         this.searchMangaSelector = "div.c-tabs-item__content";
+        /**
+         * Set to true if your source has advanced search functionality built in.
+         */
+        this.hasAdvancedSearchPage = false;
+        /**
+         * Different Madara sources might have a slightly different selector which is required to parse out
+         * each page while on a chapter page. This is the selector
+         * which is looped over. This may be overridden if required.
+         */
         this.chapterDetailsSelector = "div.page-break";
         /**
          * Set to false if your source has individual buttons for each page as opposed to a 'LOAD MORE' button
@@ -392,11 +401,10 @@ class Madara extends paperback_extensions_common_1.Source {
     getChapters(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `${this.baseUrl}/wp-admin/admin-ajax.php/`,
+                url: `${this.baseUrl}/wp-admin/admin-ajax.php`,
                 method: 'POST',
                 headers: {
-                    "content-type": "application/x-www-form-urlencoded",
-                    "referer": this.baseUrl
+                    "content-type": "application/x-www-form-urlencoded"
                 },
                 data: this.urlEncodeObject({
                     "action": "manga_get_chapters",
@@ -422,13 +430,22 @@ class Madara extends paperback_extensions_common_1.Source {
     }
     getTags() {
         return __awaiter(this, void 0, void 0, function* () {
-            const request = createRequestObject({
-                url: `${this.baseUrl}/`,
-                method: 'GET'
-            });
+            let request;
+            if (this.hasAdvancedSearchPage) {
+                request = createRequestObject({
+                    url: `${this.baseUrl}/?s=&post_type=wp-manga`,
+                    method: 'GET'
+                });
+            }
+            else {
+                request = createRequestObject({
+                    url: `${this.baseUrl}/`,
+                    method: 'GET'
+                });
+            }
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
-            return this.parser.parseTags($);
+            return this.parser.parseTags($, this.hasAdvancedSearchPage);
         });
     }
     searchRequest(query, metadata) {
@@ -605,11 +622,10 @@ class Madara extends paperback_extensions_common_1.Source {
             data["vars[order]"] = "desc";
         }
         return createRequestObject({
-            url: `${this.baseUrl}/wp-admin/admin-ajax.php/`,
+            url: `${this.baseUrl}/wp-admin/admin-ajax.php`,
             method: 'POST',
             headers: {
-                "content-type": "application/x-www-form-urlencoded",
-                "referer": this.baseUrl
+                "content-type": "application/x-www-form-urlencoded"
             },
             data: this.urlEncodeObject(data),
             cookies: [createCookie({ name: 'wpmanga-adault', value: "1", domain: this.baseUrl })]
@@ -639,6 +655,11 @@ class Madara extends paperback_extensions_common_1.Source {
             time = new Date(timeAgo);
         }
         return time;
+    }
+    globalRequestHeaders() {
+        return {
+            Referer: this.baseUrl
+        };
     }
 }
 exports.Madara = Madara;
@@ -716,7 +737,9 @@ class Parser {
     parseChapterDetails($, mangaId, chapterId, selector) {
         let pages = [];
         for (let obj of $(selector).toArray()) {
-            let page = $('img', $(obj)).attr('data-src');
+            let imageObj = $('img', $(obj));
+            let hasDataSrc = typeof imageObj.attr('data-src') != 'undefined';
+            let page = hasDataSrc ? imageObj.attr('data-src') : imageObj.attr('src');
             if (!page) {
                 throw (`Could not parse page for ${mangaId}/${chapterId}`);
             }
@@ -729,13 +752,22 @@ class Parser {
             longStrip: false
         });
     }
-    parseTags($) {
-        var _a, _b;
+    parseTags($, advancedSearch) {
+        var _a, _b, _c;
         let genres = [];
-        for (let obj of $('ul.sub-menu li a').toArray()) {
-            let label = $(obj).text();
-            let id = (_b = (_a = $(obj).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/')[4]) !== null && _b !== void 0 ? _b : label;
-            genres.push(createTag({ label: label, id: id }));
+        if (advancedSearch) {
+            for (let obj of $('.checkbox-group div label').toArray()) {
+                let label = $(obj).text().trim();
+                let id = (_a = $(obj).attr('for')) !== null && _a !== void 0 ? _a : label;
+                genres.push(createTag({ label: label, id: id }));
+            }
+        }
+        else {
+            for (let obj of $('.menu-item-object-wp-manga-genre a', $('.second-menu')).toArray()) {
+                let label = $(obj).text().trim();
+                let id = (_c = (_b = $(obj).attr('href')) === null || _b === void 0 ? void 0 : _b.split('/')[4]) !== null && _c !== void 0 ? _c : label;
+                genres.push(createTag({ label: label, id: id }));
+            }
         }
         return [createTagSection({ id: '0', label: 'genres', tags: genres })];
     }
@@ -747,7 +779,7 @@ class Parser {
             let title = createIconText({ text: this.decodeHTMLEntity((_b = $('a', $(obj)).attr('title')) !== null && _b !== void 0 ? _b : '') });
             let image = $('img', $(obj)).attr('data-src');
             if (typeof id === 'undefined' || typeof image === 'undefined' || typeof title.text === 'undefined') {
-                if (id.includes('autopost'))
+                if (id.includes(source.baseUrl.replace('/', '')))
                     continue;
                 // Something went wrong with our parsing, return a detailed error
                 throw (`Failed to parse searchResult for ${source.baseUrl} using ${source.searchMangaSelector} as a loop selector`);
@@ -782,7 +814,7 @@ class Parser {
         var _a, _b, _c, _d;
         let passedReferenceTime = false;
         let updatedManga = [];
-        for (let obj of $('div.manga').toArray()) {
+        for (let obj of $('div.page-item-detail').toArray()) {
             let id = (_b = (_a = $('a', $('h3.h5', obj)).attr('href')) === null || _a === void 0 ? void 0 : _a.replace(`${source.baseUrl}/${source.sourceTraversalPathName}/`, '').replace('/', '')) !== null && _b !== void 0 ? _b : '';
             let mangaTime;
             if ($('.c-new-tag a', obj).length > 0) {
