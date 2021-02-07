@@ -137,7 +137,7 @@ export class Parser {
     parseHomeSection($: CheerioStatic, source: any): MangaTile[] {
         let items: MangaTile[] = []
 
-        for (let obj of $('div.manga').toArray()) {
+        for (let obj of $('div.page-item-detail').toArray()) {
             let image = $('img', $(obj)).attr('data-src')
             let title = this.decodeHTMLEntity($('a', $('h3.h5', $(obj))).text())
             let id = $('a', $('h3.h5', $(obj))).attr('href')?.replace(`${source.baseUrl}/${source.sourceTraversalPathName}/`, '').replace('/', '')

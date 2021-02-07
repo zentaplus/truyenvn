@@ -94,7 +94,7 @@ describe('ComicKiba Tests', function () {
 
 
     it("Testing home page results for latest titles", async() => {
-        let results = await wrapper.getViewMoreItems(source, "0", {}, 3)
+        let results = await wrapper.getViewMoreItems(source, "1", {}, 3)
 
         expect(results, "No results whatsoever for this section").to.exist
         expect(results, "No results whatsoever for this section").to.exist
