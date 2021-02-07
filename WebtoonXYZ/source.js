@@ -730,7 +730,7 @@ class Parser {
     parseHomeSection($, source) {
         var _a;
         let items = [];
-        for (let obj of $('div.manga').toArray()) {
+        for (let obj of $('div.page-item-detail').toArray()) {
             let image = $('img', $(obj)).attr('data-src');
             let title = this.decodeHTMLEntity($('a', $('h3.h5', $(obj))).text());
             let id = (_a = $('a', $('h3.h5', $(obj))).attr('href')) === null || _a === void 0 ? void 0 : _a.replace(`${source.baseUrl}/${source.sourceTraversalPathName}/`, '').replace('/', '');
