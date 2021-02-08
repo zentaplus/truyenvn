@@ -846,35 +846,40 @@ exports.Parser = Parser;
 },{"paperback-extensions-common":4}],27:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MangaTX = exports.MangaTXInfo = void 0;
+exports.Toonily = exports.ToonilyInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const Madara_1 = require("../Madara");
-const MANGATX_DOMAIN = "https://mangatx.com";
-exports.MangaTXInfo = {
+const TOONILY_DOMAIN = "https://toonily.com";
+exports.ToonilyInfo = {
     version: '1.0.0',
-    name: 'MangaTX',
-    description: 'Extension that pulls manga from mangatx.com',
+    name: 'Toonily',
+    description: 'Extension that pulls manga from toonily.com',
     author: 'GameFuzzy',
     authorWebsite: 'http://github.com/gamefuzzy',
     icon: "icon.png",
     hentaiSource: false,
-    websiteBaseURL: MANGATX_DOMAIN,
+    websiteBaseURL: TOONILY_DOMAIN,
     sourceTags: [
         {
             text: "Notifications",
             type: paperback_extensions_common_1.TagType.GREEN
+        },
+        {
+            text: "18+",
+            type: paperback_extensions_common_1.TagType.YELLOW
         }
     ]
 };
-class MangaTX extends Madara_1.Madara {
+class Toonily extends Madara_1.Madara {
     constructor() {
         super(...arguments);
-        this.baseUrl = MANGATX_DOMAIN;
+        this.baseUrl = TOONILY_DOMAIN;
         this.languageCode = paperback_extensions_common_1.LanguageCode.ENGLISH;
         this.hasAdvancedSearchPage = true;
+        this.sourceTraversalPathName = 'webtoon';
     }
 }
-exports.MangaTX = MangaTX;
+exports.Toonily = Toonily;
 
 },{"../Madara":25,"paperback-extensions-common":4}]},{},[27])(27)
 });

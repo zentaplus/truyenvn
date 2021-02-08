@@ -358,7 +358,10 @@ class Madara extends paperback_extensions_common_1.Source {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
                 url: `${this.baseUrl}/${this.sourceTraversalPathName}/${mangaId}`,
-                method: 'GET'
+                method: 'GET',
+                headers: {
+                    "referer": this.baseUrl
+                }
             });
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
@@ -371,7 +374,8 @@ class Madara extends paperback_extensions_common_1.Source {
                 url: `${this.baseUrl}/wp-admin/admin-ajax.php`,
                 method: 'POST',
                 headers: {
-                    "content-type": "application/x-www-form-urlencoded"
+                    "content-type": "application/x-www-form-urlencoded",
+                    "referer": this.baseUrl
                 },
                 data: this.urlEncodeObject({
                     "action": "manga_get_chapters",
@@ -401,13 +405,19 @@ class Madara extends paperback_extensions_common_1.Source {
             if (this.hasAdvancedSearchPage) {
                 request = createRequestObject({
                     url: `${this.baseUrl}/?s=&post_type=wp-manga`,
-                    method: 'GET'
+                    method: 'GET',
+                    headers: {
+                        "referer": this.baseUrl
+                    }
                 });
             }
             else {
                 request = createRequestObject({
                     url: `${this.baseUrl}/`,
-                    method: 'GET'
+                    method: 'GET',
+                    headers: {
+                        "referer": this.baseUrl
+                    }
                 });
             }
             let data = yield this.requestManager.schedule(request, 1);
@@ -592,7 +602,8 @@ class Madara extends paperback_extensions_common_1.Source {
             url: `${this.baseUrl}/wp-admin/admin-ajax.php`,
             method: 'POST',
             headers: {
-                "content-type": "application/x-www-form-urlencoded"
+                "content-type": "application/x-www-form-urlencoded",
+                "referer": this.baseUrl
             },
             data: this.urlEncodeObject(data),
             cookies: [createCookie({ name: 'wpmanga-adault', value: "1", domain: this.baseUrl })]
@@ -625,7 +636,7 @@ class Madara extends paperback_extensions_common_1.Source {
     }
     globalRequestHeaders() {
         return {
-            Referer: this.baseUrl
+            "referer": this.baseUrl
         };
     }
 }
@@ -685,7 +696,7 @@ class Parser {
         }
         // For each available chapter..
         for (let obj of $('li.wp-manga-chapter  ').toArray()) {
-            let id = ($('a', $(obj)).first().attr('href') || '').replace(`${source.baseUrl}/${source.sourceTraversalPathName}/${realTitle}/`, '').replace('/', '');
+            let id = ($('a', $(obj)).first().attr('href') || '').replace(`${source.baseUrl}/${source.sourceTraversalPathName}/${realTitle}/`, '').replace(/\/$/, '');
             let chapNum = (_d = (_c = (_b = $('a', $(obj)).first().attr('href')) === null || _b === void 0 ? void 0 : _b.toLowerCase()) === null || _c === void 0 ? void 0 : _c.match(/\/chapter-(\d*)/)) !== null && _d !== void 0 ? _d : '';
             let releaseDate = $('i', $(obj)).length > 0 ? $('i', $(obj)).text() : (_e = $('.c-new-tag a', $(obj)).attr('title')) !== null && _e !== void 0 ? _e : '';
             if (typeof id === 'undefined') {
@@ -746,7 +757,7 @@ class Parser {
             let title = createIconText({ text: this.decodeHTMLEntity((_b = $('a', $(obj)).attr('title')) !== null && _b !== void 0 ? _b : '') });
             let image = $('img', $(obj)).attr('data-src');
             if (typeof id === 'undefined' || typeof image === 'undefined' || typeof title.text === 'undefined') {
-                if (id.includes(source.baseUrl.replace('/', '')))
+                if (id.includes(source.baseUrl.replace(/\/$/, '')))
                     continue;
                 // Something went wrong with our parsing, return a detailed error
                 throw (`Failed to parse searchResult for ${source.baseUrl} using ${source.searchMangaSelector} as a loop selector`);
@@ -782,7 +793,7 @@ class Parser {
         let passedReferenceTime = false;
         let updatedManga = [];
         for (let obj of $('div.page-item-detail').toArray()) {
-            let id = (_b = (_a = $('a', $('h3.h5', obj)).attr('href')) === null || _a === void 0 ? void 0 : _a.replace(`${source.baseUrl}/${source.sourceTraversalPathName}/`, '').replace('/', '')) !== null && _b !== void 0 ? _b : '';
+            let id = (_b = (_a = $('a', $('h3.h5', obj)).attr('href')) === null || _a === void 0 ? void 0 : _a.replace(`${source.baseUrl}/${source.sourceTraversalPathName}/`, '').replace(/\/$/, '')) !== null && _b !== void 0 ? _b : '';
             let mangaTime;
             if ($('.c-new-tag a', obj).length > 0) {
                 // Use blinking red NEW tag
