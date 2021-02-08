@@ -564,7 +564,7 @@ class Madara extends paperback_extensions_common_1.Source {
             });
         });
     }
-    cloudflareBypassRequest() {
+    getCloudflareBypassRequest() {
         return createRequestObject({
             url: `${this.baseUrl}`,
             method: 'GET',
@@ -900,6 +900,7 @@ class Toonily extends Madara_1.Madara {
         this.languageCode = paperback_extensions_common_1.LanguageCode.ENGLISH;
         this.hasAdvancedSearchPage = true;
         this.sourceTraversalPathName = 'webtoon';
+        this.userAgentRandomizer = '';
     }
 }
 exports.Toonily = Toonily;

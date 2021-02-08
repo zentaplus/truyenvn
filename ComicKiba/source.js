@@ -597,7 +597,7 @@ class Madara extends paperback_extensions_common_1.Source {
             });
         });
     }
-    cloudflareBypassRequest() {
+    getCloudflareBypassRequest() {
         return createRequestObject({
             url: `${this.baseUrl}`,
             method: 'GET',
