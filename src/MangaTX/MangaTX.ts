@@ -5,7 +5,7 @@ const MANGATX_DOMAIN = "https://mangatx.com"
 
 export const MangaTXInfo: SourceInfo = {
     version: '1.0.0',
-    name: 'MangaTX.com',
+    name: 'MangaTX',
     description: 'Extension that pulls manga from mangatx.com',
     author: 'GameFuzzy',
     authorWebsite: 'http://github.com/gamefuzzy',

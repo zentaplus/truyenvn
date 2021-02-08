@@ -5,7 +5,7 @@ const MANHUAUS_DOMAIN = "https://manhuaus.com"
 
 export const ManhuausInfo: SourceInfo = {
     version: '1.0.0',
-    name: 'ManhuaUS',
+    name: 'Manhuaus',
     description: 'Extension that pulls manga from manhuaus.com',
     author: 'GameFuzzy',
     authorWebsite: 'http://github.com/gamefuzzy',

@@ -63,7 +63,7 @@ export class Parser {
 
         // For each available chapter..
         for (let obj of $('li.wp-manga-chapter  ').toArray()) {
-            let id = ($('a', $(obj)).first().attr('href') || '').replace(`${source.baseUrl}/${source.sourceTraversalPathName}/${realTitle}/`, '').replace('/', '')
+            let id = ($('a', $(obj)).first().attr('href') || '').replace(`${source.baseUrl}/${source.sourceTraversalPathName}/${realTitle}/`, '').replace(/\/$/, '')
             let chapNum = $('a', $(obj)).first().attr('href')?.toLowerCase()?.match(/\/chapter-(\d*)/) ?? ''
             let releaseDate = $('i', $(obj)).length > 0 ? $('i', $(obj)).text() : $('.c-new-tag a', $(obj)).attr('title') ?? ''
 
@@ -131,7 +131,7 @@ export class Parser {
             let image = $('img', $(obj)).attr('data-src')
 
             if (typeof id === 'undefined' || typeof image === 'undefined' || typeof title.text === 'undefined') {
-                if(id.includes(source.baseUrl.replace('/', ''))) continue
+                if(id.includes(source.baseUrl.replace(/\/$/, ''))) continue
                 // Something went wrong with our parsing, return a detailed error
                 throw(`Failed to parse searchResult for ${source.baseUrl} using ${source.searchMangaSelector} as a loop selector`)
             }
@@ -171,7 +171,7 @@ export class Parser {
         let updatedManga: string[] = []
 
         for (let obj of $('div.page-item-detail').toArray()) {
-            let id = $('a', $('h3.h5', obj)).attr('href')?.replace(`${source.baseUrl}/${source.sourceTraversalPathName}/`, '').replace('/', '') ?? ''
+            let id = $('a', $('h3.h5', obj)).attr('href')?.replace(`${source.baseUrl}/${source.sourceTraversalPathName}/`, '').replace(/\/$/, '') ?? ''
             let mangaTime: Date
             if ($('.c-new-tag a', obj).length > 0) {
                 // Use blinking red NEW tag
