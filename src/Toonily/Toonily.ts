@@ -29,4 +29,5 @@ export class Toonily extends Madara {
     languageCode: LanguageCode = LanguageCode.ENGLISH
     hasAdvancedSearchPage: boolean = true
     sourceTraversalPathName: string = 'webtoon'
+    userAgentRandomizer = ''
 }

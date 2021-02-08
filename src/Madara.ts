@@ -58,7 +58,7 @@ export abstract class Madara extends Source {
     /**
     * Helps with CloudFlare for some sources, makes it worse for others; override with empty string if the latter is true
     */
-    userAgentRandomizer = `Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:77.0) Gecko/20100101 Firefox/78.0${Math.floor(Math.random() * 100000)}`
+    userAgentRandomizer: string = `Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:77.0) Gecko/20100101 Firefox/78.0${Math.floor(Math.random() * 100000)}`
 
     parser = new Parser()
     async getMangaDetails(mangaId: string): Promise<Manga> {
@@ -276,7 +276,7 @@ export abstract class Madara extends Source {
         })
     }
 
-    cloudflareBypassRequest() {
+    getCloudflareBypassRequest() {
         return createRequestObject({
             url: `${this.baseUrl}`,
             method: 'GET',
