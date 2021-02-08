@@ -55,6 +55,10 @@ export abstract class Madara extends Source {
      */
     loadMoreSearchManga: boolean = true
 
+    /**
+    * Helps with CloudFlare for some sources, makes it worse for others; override with empty string if the latter is true
+    */
+    userAgentRandomizer = `Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:77.0) Gecko/20100101 Firefox/78.0${Math.floor(Math.random() * 100000)}`
 
     parser = new Parser()
     async getMangaDetails(mangaId: string): Promise<Manga> {
@@ -62,7 +66,8 @@ export abstract class Madara extends Source {
             url: `${this.baseUrl}/${this.sourceTraversalPathName}/${mangaId}`,
             method: 'GET',
             headers: {
-                "referer": this.baseUrl
+                "referer": this.baseUrl,
+                "user-agent": this.userAgentRandomizer
             }
         })
 
@@ -79,7 +84,8 @@ export abstract class Madara extends Source {
             method: 'POST',
             headers: {
                 "content-type": "application/x-www-form-urlencoded",
-                "referer": this.baseUrl
+                "referer": this.baseUrl,
+                "user-agent": this.userAgentRandomizer
             },
             data: this.urlEncodeObject({
                 "action": "manga_get_chapters",
@@ -97,6 +103,10 @@ export abstract class Madara extends Source {
         const request = createRequestObject({
             url: `${this.baseUrl}/${this.sourceTraversalPathName}/${mangaId}/${chapterId}/`,
             method: 'GET',
+            headers: {
+                "referer": this.baseUrl,
+                "user-agent": this.userAgentRandomizer
+            },
             cookies: [createCookie({name: 'wpmanga-adault', value: "1", domain: this.baseUrl})]
         })
 
@@ -114,7 +124,8 @@ export abstract class Madara extends Source {
                 url: `${this.baseUrl}/?s=&post_type=wp-manga`,
                 method: 'GET',
                 headers: {
-                    "referer": this.baseUrl
+                    "referer": this.baseUrl,
+                    "user-agent": this.userAgentRandomizer
                 }
             })
         }
@@ -123,7 +134,8 @@ export abstract class Madara extends Source {
                 url: `${this.baseUrl}/`,
                 method: 'GET',
                 headers: {
-                    "referer": this.baseUrl
+                    "referer": this.baseUrl,
+                    "user-agent": this.userAgentRandomizer
                 }
             })
         }
@@ -268,6 +280,10 @@ export abstract class Madara extends Source {
         return createRequestObject({
             url: `${this.baseUrl}`,
             method: 'GET',
+            headers: {
+                "referer": this.baseUrl,
+                "user-agent": this.userAgentRandomizer
+            }
         })
     }
 
@@ -275,7 +291,11 @@ export abstract class Madara extends Source {
     async getNumericId(mangaId: string): Promise<string> {
         const request = createRequestObject({
             url: `${this.baseUrl}/${this.sourceTraversalPathName}/${mangaId}/`,
-            method: 'GET'
+            method: 'GET',
+            headers: {
+                "referer": this.baseUrl,
+                "user-agent": this.userAgentRandomizer
+            }
         })
 
         let data = await this.requestManager.schedule(request, 1)
@@ -316,7 +336,8 @@ export abstract class Madara extends Source {
             method: 'POST',
             headers: {
                 "content-type": "application/x-www-form-urlencoded",
-                "referer": this.baseUrl
+                "referer": this.baseUrl,
+                "user-agent": this.userAgentRandomizer
             },
             data: this.urlEncodeObject(data),
             cookies: [createCookie({name: 'wpmanga-adault', value: "1", domain: this.baseUrl})]
@@ -347,7 +368,9 @@ export abstract class Madara extends Source {
 
     globalRequestHeaders(): RequestHeaders {
         return {
-            "referer": this.baseUrl
+            "referer": this.baseUrl,
+            "user-agent": this.userAgentRandomizer,
+            "accept": "image/jpeg,image/png"
         }
     }
 
