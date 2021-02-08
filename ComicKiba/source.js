@@ -385,6 +385,10 @@ class Madara extends paperback_extensions_common_1.Source {
          * Set to false if your source has individual buttons for each page as opposed to a 'LOAD MORE' button
          */
         this.loadMoreSearchManga = true;
+        /**
+        * Helps with CloudFlare for some sources, makes it worse for others; override with empty string if the latter is true
+        */
+        this.userAgentRandomizer = `Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:77.0) Gecko/20100101 Firefox/78.0${Math.floor(Math.random() * 100000)}`;
         this.parser = new MadaraParser_1.Parser();
     }
     getMangaDetails(mangaId) {
@@ -393,7 +397,8 @@ class Madara extends paperback_extensions_common_1.Source {
                 url: `${this.baseUrl}/${this.sourceTraversalPathName}/${mangaId}`,
                 method: 'GET',
                 headers: {
-                    "referer": this.baseUrl
+                    "referer": this.baseUrl,
+                    "user-agent": this.userAgentRandomizer
                 }
             });
             let data = yield this.requestManager.schedule(request, 1);
@@ -408,7 +413,8 @@ class Madara extends paperback_extensions_common_1.Source {
                 method: 'POST',
                 headers: {
                     "content-type": "application/x-www-form-urlencoded",
-                    "referer": this.baseUrl
+                    "referer": this.baseUrl,
+                    "user-agent": this.userAgentRandomizer
                 },
                 data: this.urlEncodeObject({
                     "action": "manga_get_chapters",
@@ -425,6 +431,10 @@ class Madara extends paperback_extensions_common_1.Source {
             const request = createRequestObject({
                 url: `${this.baseUrl}/${this.sourceTraversalPathName}/${mangaId}/${chapterId}/`,
                 method: 'GET',
+                headers: {
+                    "referer": this.baseUrl,
+                    "user-agent": this.userAgentRandomizer
+                },
                 cookies: [createCookie({ name: 'wpmanga-adault', value: "1", domain: this.baseUrl })]
             });
             let data = yield this.requestManager.schedule(request, 1);
@@ -440,7 +450,8 @@ class Madara extends paperback_extensions_common_1.Source {
                     url: `${this.baseUrl}/?s=&post_type=wp-manga`,
                     method: 'GET',
                     headers: {
-                        "referer": this.baseUrl
+                        "referer": this.baseUrl,
+                        "user-agent": this.userAgentRandomizer
                     }
                 });
             }
@@ -449,7 +460,8 @@ class Madara extends paperback_extensions_common_1.Source {
                     url: `${this.baseUrl}/`,
                     method: 'GET',
                     headers: {
-                        "referer": this.baseUrl
+                        "referer": this.baseUrl,
+                        "user-agent": this.userAgentRandomizer
                     }
                 });
             }
@@ -589,6 +601,10 @@ class Madara extends paperback_extensions_common_1.Source {
         return createRequestObject({
             url: `${this.baseUrl}`,
             method: 'GET',
+            headers: {
+                "referer": this.baseUrl,
+                "user-agent": this.userAgentRandomizer
+            }
         });
     }
     // Only used in the test wrapper
@@ -597,7 +613,11 @@ class Madara extends paperback_extensions_common_1.Source {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
                 url: `${this.baseUrl}/${this.sourceTraversalPathName}/${mangaId}/`,
-                method: 'GET'
+                method: 'GET',
+                headers: {
+                    "referer": this.baseUrl,
+                    "user-agent": this.userAgentRandomizer
+                }
             });
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
@@ -636,7 +656,8 @@ class Madara extends paperback_extensions_common_1.Source {
             method: 'POST',
             headers: {
                 "content-type": "application/x-www-form-urlencoded",
-                "referer": this.baseUrl
+                "referer": this.baseUrl,
+                "user-agent": this.userAgentRandomizer
             },
             data: this.urlEncodeObject(data),
             cookies: [createCookie({ name: 'wpmanga-adault', value: "1", domain: this.baseUrl })]
@@ -669,7 +690,9 @@ class Madara extends paperback_extensions_common_1.Source {
     }
     globalRequestHeaders() {
         return {
-            "referer": this.baseUrl
+            "referer": this.baseUrl,
+            "user-agent": this.userAgentRandomizer,
+            "accept": "image/jpeg,image/png"
         };
     }
 }
