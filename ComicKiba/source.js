@@ -678,13 +678,13 @@ class Madara extends paperback_extensions_common_1.Source {
             return {
                 "referer": `${this.baseUrl}/`,
                 "user-agent": this.userAgentRandomizer,
-                "accept": "image/jpeg,image/png"
+                "accept": "image/avif,image/webp,image/apng,image/*,*/*;q=0.8"
             };
         }
         else {
             return {
                 "referer": `${this.baseUrl}/`,
-                "accept": "image/jpeg,image/png"
+                "accept": "image/avif,image/webp,image/apng,image/*,*/*;q=0.8"
             };
         }
     }
@@ -804,9 +804,7 @@ class Parser {
         for (let obj of $(source.searchMangaSelector).toArray()) {
             let id = ((_a = $('a', $(obj)).attr('href')) !== null && _a !== void 0 ? _a : '').replace(`${source.baseUrl}/${source.sourceTraversalPathName}/`, '').replace(/\/$/, '');
             let title = createIconText({ text: this.decodeHTMLEntity((_b = $('a', $(obj)).attr('title')) !== null && _b !== void 0 ? _b : '') });
-            let imageObj = $('img', $(obj));
-            let hasDataSrc = typeof imageObj.attr('data-src') != 'undefined';
-            let image = hasDataSrc ? imageObj.attr('data-src') : imageObj.attr('src');
+            let image = $('img', $(obj)).attr('data-src');
             if (typeof id === 'undefined' || typeof image === 'undefined' || typeof title.text === 'undefined') {
                 if (id.includes(source.baseUrl.replace(/\/$/, '')))
                     continue;
