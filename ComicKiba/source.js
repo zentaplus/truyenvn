@@ -804,7 +804,9 @@ class Parser {
         for (let obj of $(source.searchMangaSelector).toArray()) {
             let id = ((_a = $('a', $(obj)).attr('href')) !== null && _a !== void 0 ? _a : '').replace(`${source.baseUrl}/${source.sourceTraversalPathName}/`, '').replace(/\/$/, '');
             let title = createIconText({ text: this.decodeHTMLEntity((_b = $('a', $(obj)).attr('title')) !== null && _b !== void 0 ? _b : '') });
-            let image = $('img', $(obj)).attr('data-src');
+            let imageObj = $('img', $(obj));
+            let hasDataSrc = typeof imageObj.attr('data-src') != 'undefined';
+            let image = hasDataSrc ? imageObj.attr('data-src') : imageObj.attr('src');
             if (typeof id === 'undefined' || typeof image === 'undefined' || typeof title.text === 'undefined') {
                 if (id.includes(source.baseUrl.replace(/\/$/, '')))
                     continue;
