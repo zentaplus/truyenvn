@@ -25,4 +25,5 @@ export class Manhuaus extends Madara {
     languageCode: LanguageCode = LanguageCode.ENGLISH
     hasAdvancedSearchPage = true
     chapterDetailsSelector: string = 'li.blocks-gallery-item'
+    //userAgentRandomizer = ''
 }

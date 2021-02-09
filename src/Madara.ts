@@ -63,12 +63,9 @@ export abstract class Madara extends Source {
     parser = new Parser()
     async getMangaDetails(mangaId: string): Promise<Manga> {
         const request = createRequestObject({
-            url: `${this.baseUrl}/${this.sourceTraversalPathName}/${mangaId}`,
+            url: `${this.baseUrl}/${this.sourceTraversalPathName}/${mangaId}/`,
             method: 'GET',
-            headers: {
-                "referer": this.baseUrl,
-                "user-agent": this.userAgentRandomizer
-            }
+            headers: this.constructHeaders({})
         })
 
         let data = await this.requestManager.schedule(request, 1)
@@ -82,11 +79,9 @@ export abstract class Madara extends Source {
         const request = createRequestObject({
             url: `${this.baseUrl}/wp-admin/admin-ajax.php`,
             method: 'POST',
-            headers: {
-                "content-type": "application/x-www-form-urlencoded",
-                "referer": this.baseUrl,
-                "user-agent": this.userAgentRandomizer
-            },
+            headers: this.constructHeaders({
+                "content-type": "application/x-www-form-urlencoded"
+            }),
             data: this.urlEncodeObject({
                 "action": "manga_get_chapters",
                 "manga": mangaId
@@ -103,10 +98,7 @@ export abstract class Madara extends Source {
         const request = createRequestObject({
             url: `${this.baseUrl}/${this.sourceTraversalPathName}/${mangaId}/${chapterId}/`,
             method: 'GET',
-            headers: {
-                "referer": this.baseUrl,
-                "user-agent": this.userAgentRandomizer
-            },
+            headers: this.constructHeaders({}),
             cookies: [createCookie({name: 'wpmanga-adault', value: "1", domain: this.baseUrl})]
         })
 
@@ -123,20 +115,14 @@ export abstract class Madara extends Source {
             request = createRequestObject({
                 url: `${this.baseUrl}/?s=&post_type=wp-manga`,
                 method: 'GET',
-                headers: {
-                    "referer": this.baseUrl,
-                    "user-agent": this.userAgentRandomizer
-                }
+                headers: this.constructHeaders({})
             })
         }
         else {
             request = createRequestObject({
                 url: `${this.baseUrl}/`,
                 method: 'GET',
-                headers: {
-                    "referer": this.baseUrl,
-                    "user-agent": this.userAgentRandomizer
-                }
+                headers: this.constructHeaders({})
             })
         }
 
@@ -280,10 +266,7 @@ export abstract class Madara extends Source {
         return createRequestObject({
             url: `${this.baseUrl}`,
             method: 'GET',
-            headers: {
-                "referer": this.baseUrl,
-                "user-agent": this.userAgentRandomizer
-            }
+            headers: this.constructHeaders({})
         })
     }
 
@@ -292,10 +275,7 @@ export abstract class Madara extends Source {
         const request = createRequestObject({
             url: `${this.baseUrl}/${this.sourceTraversalPathName}/${mangaId}/`,
             method: 'GET',
-            headers: {
-                "referer": this.baseUrl,
-                "user-agent": this.userAgentRandomizer
-            }
+            headers: this.constructHeaders({})
         })
 
         let data = await this.requestManager.schedule(request, 1)
@@ -309,7 +289,7 @@ export abstract class Madara extends Source {
     }
 
     /**
-     * Constructs requests to be sent to the Madara /admin-ajax.php/ endpoint.
+     * Constructs requests to be sent to the Madara /admin-ajax.php endpoint.
      */
     constructAjaxRequest(page: Number, postsPerPage: Number, meta_key: string, searchQuery: string): any {
         let isSearch = searchQuery != ''
@@ -334,11 +314,9 @@ export abstract class Madara extends Source {
         return createRequestObject({
             url: `${this.baseUrl}/wp-admin/admin-ajax.php`,
             method: 'POST',
-            headers: {
-                "content-type": "application/x-www-form-urlencoded",
-                "referer": this.baseUrl,
-                "user-agent": this.userAgentRandomizer
-            },
+            headers: this.constructHeaders({
+                "content-type": "application/x-www-form-urlencoded"
+            }),
             data: this.urlEncodeObject(data),
             cookies: [createCookie({name: 'wpmanga-adault', value: "1", domain: this.baseUrl})]
         })
@@ -366,11 +344,27 @@ export abstract class Madara extends Source {
         return time
     }
 
+    constructHeaders(headers: any): any {
+        if(this.userAgentRandomizer !== '') {
+            headers["user-agent"] = this.userAgentRandomizer
+        }
+        headers["referer"] = this.baseUrl
+        return headers
+    }
+
     globalRequestHeaders(): RequestHeaders {
-        return {
-            "referer": this.baseUrl,
-            "user-agent": this.userAgentRandomizer,
-            "accept": "image/jpeg,image/png"
+        if(this.userAgentRandomizer !== '') {
+            return {
+                "referer": `${this.baseUrl}/`,
+                "user-agent": this.userAgentRandomizer,
+                "accept": "image/jpeg,image/png"
+            }
+        }
+        else {
+            return {
+                "referer": `${this.baseUrl}/`,
+                "accept": "image/jpeg,image/png"
+            }
         }
     }
 

@@ -17,7 +17,7 @@ export class Parser {
         let author = this.decodeHTMLEntity($('div.author-content').first().text().replace("\\n", '').trim()).replace('Updating', 'Unknown')
         let artist = this.decodeHTMLEntity($('div.artist-content').first().text().replace("\\n", '').trim()).replace('Updating', 'Unknown')
         let summary = this.decodeHTMLEntity($('div.description-summary').first().text()).replace('Show more', '').trim()
-        let image = $('div.summary_image img').first().attr('data-src') ?? ''
+        let image = encodeURI($('div.summary_image img').first().attr('data-src') ?? '')
         let rating = $('span.total_votes').text().replace('Your Rating', '')
         let isOngoing = $('div.summary-content', $('div.post-content_item').last()).text().toLowerCase().trim() == "ongoing"
         let genres: Tag[] = []
@@ -126,7 +126,7 @@ export class Parser {
     parseSearchResults($: CheerioSelector, source: any): MangaTile[] {
         let results: MangaTile[] = []
         for (let obj of $(source.searchMangaSelector).toArray()) {
-            let id = ($('a', $(obj)).attr('href') ?? '').replace(`${source.baseUrl}/${source.sourceTraversalPathName}/`, '').replace('/', '')
+            let id = ($('a', $(obj)).attr('href') ?? '').replace(`${source.baseUrl}/${source.sourceTraversalPathName}/`, '').replace(/\/$/, '')
             let title = createIconText({text: this.decodeHTMLEntity($('a', $(obj)).attr('title') ?? '')})
             let image = $('img', $(obj)).attr('data-src')
 
@@ -149,9 +149,9 @@ export class Parser {
         let items: MangaTile[] = []
 
         for (let obj of $('div.page-item-detail').toArray()) {
-            let image = $('img', $(obj)).attr('data-src')
+            let image = encodeURI($('img', $(obj)).attr('data-src') ?? '')
             let title = this.decodeHTMLEntity($('a', $('h3.h5', $(obj))).text())
-            let id = $('a', $('h3.h5', $(obj))).attr('href')?.replace(`${source.baseUrl}/${source.sourceTraversalPathName}/`, '').replace('/', '')
+            let id = $('a', $('h3.h5', $(obj))).attr('href')?.replace(`${source.baseUrl}/${source.sourceTraversalPathName}/`, '').replace(/\/$/, '')
 
             if (!id || !title || !image) {
                 throw(`Failed to parse homepage sections for ${source.baseUrl}/${source.homePage}/`)
