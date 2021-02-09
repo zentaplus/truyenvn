@@ -361,12 +361,9 @@ class Madara extends paperback_extensions_common_1.Source {
     getMangaDetails(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `${this.baseUrl}/${this.sourceTraversalPathName}/${mangaId}`,
+                url: `${this.baseUrl}/${this.sourceTraversalPathName}/${mangaId}/`,
                 method: 'GET',
-                headers: {
-                    "referer": this.baseUrl,
-                    "user-agent": this.userAgentRandomizer
-                }
+                headers: this.constructHeaders({})
             });
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
@@ -378,11 +375,9 @@ class Madara extends paperback_extensions_common_1.Source {
             const request = createRequestObject({
                 url: `${this.baseUrl}/wp-admin/admin-ajax.php`,
                 method: 'POST',
-                headers: {
-                    "content-type": "application/x-www-form-urlencoded",
-                    "referer": this.baseUrl,
-                    "user-agent": this.userAgentRandomizer
-                },
+                headers: this.constructHeaders({
+                    "content-type": "application/x-www-form-urlencoded"
+                }),
                 data: this.urlEncodeObject({
                     "action": "manga_get_chapters",
                     "manga": mangaId
@@ -398,10 +393,7 @@ class Madara extends paperback_extensions_common_1.Source {
             const request = createRequestObject({
                 url: `${this.baseUrl}/${this.sourceTraversalPathName}/${mangaId}/${chapterId}/`,
                 method: 'GET',
-                headers: {
-                    "referer": this.baseUrl,
-                    "user-agent": this.userAgentRandomizer
-                },
+                headers: this.constructHeaders({}),
                 cookies: [createCookie({ name: 'wpmanga-adault', value: "1", domain: this.baseUrl })]
             });
             let data = yield this.requestManager.schedule(request, 1);
@@ -416,20 +408,14 @@ class Madara extends paperback_extensions_common_1.Source {
                 request = createRequestObject({
                     url: `${this.baseUrl}/?s=&post_type=wp-manga`,
                     method: 'GET',
-                    headers: {
-                        "referer": this.baseUrl,
-                        "user-agent": this.userAgentRandomizer
-                    }
+                    headers: this.constructHeaders({})
                 });
             }
             else {
                 request = createRequestObject({
                     url: `${this.baseUrl}/`,
                     method: 'GET',
-                    headers: {
-                        "referer": this.baseUrl,
-                        "user-agent": this.userAgentRandomizer
-                    }
+                    headers: this.constructHeaders({})
                 });
             }
             let data = yield this.requestManager.schedule(request, 1);
@@ -568,10 +554,7 @@ class Madara extends paperback_extensions_common_1.Source {
         return createRequestObject({
             url: `${this.baseUrl}`,
             method: 'GET',
-            headers: {
-                "referer": this.baseUrl,
-                "user-agent": this.userAgentRandomizer
-            }
+            headers: this.constructHeaders({})
         });
     }
     // Only used in the test wrapper
@@ -581,10 +564,7 @@ class Madara extends paperback_extensions_common_1.Source {
             const request = createRequestObject({
                 url: `${this.baseUrl}/${this.sourceTraversalPathName}/${mangaId}/`,
                 method: 'GET',
-                headers: {
-                    "referer": this.baseUrl,
-                    "user-agent": this.userAgentRandomizer
-                }
+                headers: this.constructHeaders({})
             });
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
@@ -596,7 +576,7 @@ class Madara extends paperback_extensions_common_1.Source {
         });
     }
     /**
-     * Constructs requests to be sent to the Madara /admin-ajax.php/ endpoint.
+     * Constructs requests to be sent to the Madara /admin-ajax.php endpoint.
      */
     constructAjaxRequest(page, postsPerPage, meta_key, searchQuery) {
         let isSearch = searchQuery != '';
@@ -621,11 +601,9 @@ class Madara extends paperback_extensions_common_1.Source {
         return createRequestObject({
             url: `${this.baseUrl}/wp-admin/admin-ajax.php`,
             method: 'POST',
-            headers: {
-                "content-type": "application/x-www-form-urlencoded",
-                "referer": this.baseUrl,
-                "user-agent": this.userAgentRandomizer
-            },
+            headers: this.constructHeaders({
+                "content-type": "application/x-www-form-urlencoded"
+            }),
             data: this.urlEncodeObject(data),
             cookies: [createCookie({ name: 'wpmanga-adault', value: "1", domain: this.baseUrl })]
         });
@@ -655,12 +633,27 @@ class Madara extends paperback_extensions_common_1.Source {
         }
         return time;
     }
+    constructHeaders(headers) {
+        if (this.userAgentRandomizer !== '') {
+            headers["user-agent"] = this.userAgentRandomizer;
+        }
+        headers["referer"] = this.baseUrl;
+        return headers;
+    }
     globalRequestHeaders() {
-        return {
-            "referer": this.baseUrl,
-            "user-agent": this.userAgentRandomizer,
-            "accept": "image/jpeg,image/png"
-        };
+        if (this.userAgentRandomizer !== '') {
+            return {
+                "referer": `${this.baseUrl}/`,
+                "user-agent": this.userAgentRandomizer,
+                "accept": "image/jpeg,image/png"
+            };
+        }
+        else {
+            return {
+                "referer": `${this.baseUrl}/`,
+                "accept": "image/jpeg,image/png"
+            };
+        }
     }
 }
 exports.Madara = Madara;
@@ -678,7 +671,7 @@ class Parser {
         let author = this.decodeHTMLEntity($('div.author-content').first().text().replace("\\n", '').trim()).replace('Updating', 'Unknown');
         let artist = this.decodeHTMLEntity($('div.artist-content').first().text().replace("\\n", '').trim()).replace('Updating', 'Unknown');
         let summary = this.decodeHTMLEntity($('div.description-summary').first().text()).replace('Show more', '').trim();
-        let image = (_a = $('div.summary_image img').first().attr('data-src')) !== null && _a !== void 0 ? _a : '';
+        let image = encodeURI((_a = $('div.summary_image img').first().attr('data-src')) !== null && _a !== void 0 ? _a : '');
         let rating = $('span.total_votes').text().replace('Your Rating', '');
         let isOngoing = $('div.summary-content', $('div.post-content_item').last()).text().toLowerCase().trim() == "ongoing";
         let genres = [];
@@ -776,7 +769,7 @@ class Parser {
         var _a, _b;
         let results = [];
         for (let obj of $(source.searchMangaSelector).toArray()) {
-            let id = ((_a = $('a', $(obj)).attr('href')) !== null && _a !== void 0 ? _a : '').replace(`${source.baseUrl}/${source.sourceTraversalPathName}/`, '').replace('/', '');
+            let id = ((_a = $('a', $(obj)).attr('href')) !== null && _a !== void 0 ? _a : '').replace(`${source.baseUrl}/${source.sourceTraversalPathName}/`, '').replace(/\/$/, '');
             let title = createIconText({ text: this.decodeHTMLEntity((_b = $('a', $(obj)).attr('title')) !== null && _b !== void 0 ? _b : '') });
             let image = $('img', $(obj)).attr('data-src');
             if (typeof id === 'undefined' || typeof image === 'undefined' || typeof title.text === 'undefined') {
@@ -794,12 +787,12 @@ class Parser {
         return results;
     }
     parseHomeSection($, source) {
-        var _a;
+        var _a, _b;
         let items = [];
         for (let obj of $('div.page-item-detail').toArray()) {
-            let image = $('img', $(obj)).attr('data-src');
+            let image = encodeURI((_a = $('img', $(obj)).attr('data-src')) !== null && _a !== void 0 ? _a : '');
             let title = this.decodeHTMLEntity($('a', $('h3.h5', $(obj))).text());
-            let id = (_a = $('a', $('h3.h5', $(obj))).attr('href')) === null || _a === void 0 ? void 0 : _a.replace(`${source.baseUrl}/${source.sourceTraversalPathName}/`, '').replace('/', '');
+            let id = (_b = $('a', $('h3.h5', $(obj))).attr('href')) === null || _b === void 0 ? void 0 : _b.replace(`${source.baseUrl}/${source.sourceTraversalPathName}/`, '').replace(/\/$/, '');
             if (!id || !title || !image) {
                 throw (`Failed to parse homepage sections for ${source.baseUrl}/${source.homePage}/`);
             }
@@ -896,6 +889,7 @@ class Manhuaus extends Madara_1.Madara {
         this.languageCode = paperback_extensions_common_1.LanguageCode.ENGLISH;
         this.hasAdvancedSearchPage = true;
         this.chapterDetailsSelector = 'li.blocks-gallery-item';
+        //userAgentRandomizer = ''
     }
 }
 exports.Manhuaus = Manhuaus;
