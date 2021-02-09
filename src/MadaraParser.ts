@@ -128,9 +128,7 @@ export class Parser {
         for (let obj of $(source.searchMangaSelector).toArray()) {
             let id = ($('a', $(obj)).attr('href') ?? '').replace(`${source.baseUrl}/${source.sourceTraversalPathName}/`, '').replace(/\/$/, '')
             let title = createIconText({text: this.decodeHTMLEntity($('a', $(obj)).attr('title') ?? '')})
-            let imageObj = $('img', $(obj))
-            let hasDataSrc = typeof imageObj.attr('data-src') != 'undefined'
-            let image = hasDataSrc ? imageObj.attr('data-src') : imageObj.attr('src')
+            let image = $('img', $(obj)).attr('data-src')
 
             if (typeof id === 'undefined' || typeof image === 'undefined' || typeof title.text === 'undefined') {
                 if(id.includes(source.baseUrl.replace(/\/$/, ''))) continue
