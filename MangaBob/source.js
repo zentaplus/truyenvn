@@ -862,19 +862,19 @@ exports.Parser = Parser;
 },{"paperback-extensions-common":4}],27:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Manhuaus = exports.ManhuausInfo = void 0;
+exports.MangaBob = exports.MangaBobInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const Madara_1 = require("../Madara");
-const MANHUAUS_DOMAIN = "https://manhuaus.com";
-exports.ManhuausInfo = {
+const MANGABOB_DOMAIN = "https://mangabob.com";
+exports.MangaBobInfo = {
     version: '1.0.0',
-    name: 'Manhuaus',
-    description: 'Extension that pulls manga from manhuaus.com',
+    name: 'MangaBob',
+    description: 'Extension that pulls manga from mangabob.com',
     author: 'GameFuzzy',
     authorWebsite: 'http://github.com/gamefuzzy',
     icon: "icon.png",
     hentaiSource: false,
-    websiteBaseURL: MANHUAUS_DOMAIN,
+    websiteBaseURL: MANGABOB_DOMAIN,
     sourceTags: [
         {
             text: "Notifications",
@@ -882,16 +882,15 @@ exports.ManhuausInfo = {
         }
     ]
 };
-class Manhuaus extends Madara_1.Madara {
+class MangaBob extends Madara_1.Madara {
     constructor() {
         super(...arguments);
-        this.baseUrl = MANHUAUS_DOMAIN;
+        this.baseUrl = MANGABOB_DOMAIN;
         this.languageCode = paperback_extensions_common_1.LanguageCode.ENGLISH;
         this.hasAdvancedSearchPage = true;
-        this.chapterDetailsSelector = 'li.blocks-gallery-item';
     }
 }
-exports.Manhuaus = Manhuaus;
+exports.MangaBob = MangaBob;
 
 },{"../Madara":25,"paperback-extensions-common":4}]},{},[27])(27)
 });
