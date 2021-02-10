@@ -64,7 +64,7 @@ export class Parser {
         // For each available chapter..
         for (let obj of $('li.wp-manga-chapter  ').toArray()) {
             let id = ($('a', $(obj)).first().attr('href') || '').replace(`${source.baseUrl}/${source.sourceTraversalPathName}/${realTitle}/`, '').replace(/\/$/, '')
-            let chapNum = $('a', $(obj)).first().attr('href')?.toLowerCase()?.match(/chapter-\D*(\d*.\d*)/) ?? ''
+            let chapNum = $('a', $(obj)).first().attr('href')?.toLowerCase()?.match(/chapter-\D*(\d*\.?\d*)/) ?? ''
             let releaseDate = $('i', $(obj)).length > 0 ? $('i', $(obj)).text() : $('.c-new-tag a', $(obj)).attr('title') ?? ''
 
             if (typeof id === 'undefined') {
