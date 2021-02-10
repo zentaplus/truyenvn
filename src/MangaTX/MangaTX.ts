@@ -24,5 +24,4 @@ export class MangaTX extends Madara {
     baseUrl: string = MANGATX_DOMAIN
     languageCode: LanguageCode = LanguageCode.ENGLISH
     hasAdvancedSearchPage = true
-    userAgentRandomizer = ''
 }
