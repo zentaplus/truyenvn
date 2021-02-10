@@ -888,6 +888,7 @@ class MangaTX extends Madara_1.Madara {
         this.baseUrl = MANGATX_DOMAIN;
         this.languageCode = paperback_extensions_common_1.LanguageCode.ENGLISH;
         this.hasAdvancedSearchPage = true;
+        this.userAgentRandomizer = '';
     }
 }
 exports.MangaTX = MangaTX;
