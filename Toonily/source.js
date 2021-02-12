@@ -34,6 +34,18 @@ class Source {
     globalRequestHeaders() { return {}; }
     globalRequestCookies() { return []; }
     /**
+     * A stateful source may require user input.
+     * By supplying this value to the Source, the app will render your form to the user
+     * in the application settings.
+     */
+    getAppStatefulForm() { return createUserForm({ formElements: [] }); }
+    /**
+     * When the Advanced Search is rendered to the user, this skeleton defines what
+     * fields which will show up to the user, and returned back to the source
+     * when the request is made.
+     */
+    getAdvancedSearchForm() { return createUserForm({ formElements: [] }); }
+    /**
      * (OPTIONAL METHOD) Given a manga ID, return a URL which Safari can open in a browser to display.
      * @param mangaId
      */
@@ -165,7 +177,7 @@ __exportStar(require("./base"), exports);
 __exportStar(require("./models"), exports);
 __exportStar(require("./APIWrapper"), exports);
 
-},{"./APIWrapper":1,"./base":3,"./models":24}],5:[function(require,module,exports){
+},{"./APIWrapper":1,"./base":3,"./models":25}],5:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 
@@ -276,6 +288,8 @@ arguments[4][5][0].apply(exports,arguments)
 },{"dup":5}],23:[function(require,module,exports){
 arguments[4][5][0].apply(exports,arguments)
 },{"dup":5}],24:[function(require,module,exports){
+arguments[4][5][0].apply(exports,arguments)
+},{"dup":5}],25:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -307,8 +321,9 @@ __exportStar(require("./RequestHeaders"), exports);
 __exportStar(require("./SourceInfo"), exports);
 __exportStar(require("./TrackObject"), exports);
 __exportStar(require("./OAuth"), exports);
+__exportStar(require("./UserForm"), exports);
 
-},{"./Chapter":5,"./ChapterDetails":6,"./Constants":7,"./HomeSection":8,"./Languages":9,"./Manga":10,"./MangaTile":11,"./MangaUpdate":12,"./OAuth":13,"./PagedResults":14,"./RequestHeaders":15,"./RequestManager":16,"./RequestObject":17,"./ResponseObject":18,"./SearchRequest":19,"./SourceInfo":20,"./SourceTag":21,"./TagSection":22,"./TrackObject":23}],25:[function(require,module,exports){
+},{"./Chapter":5,"./ChapterDetails":6,"./Constants":7,"./HomeSection":8,"./Languages":9,"./Manga":10,"./MangaTile":11,"./MangaUpdate":12,"./OAuth":13,"./PagedResults":14,"./RequestHeaders":15,"./RequestManager":16,"./RequestObject":17,"./ResponseObject":18,"./SearchRequest":19,"./SourceInfo":20,"./SourceTag":21,"./TagSection":22,"./TrackObject":23,"./UserForm":24}],26:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -645,20 +660,20 @@ class Madara extends paperback_extensions_common_1.Source {
             return {
                 "referer": `${this.baseUrl}/`,
                 "user-agent": this.userAgentRandomizer,
-                "accept": "image/avif,image/webp,image/apng,image/*,*/*;q=0.8"
+                "accept": "image/avif,image/webp,image/apng,image/*;q=0.8"
             };
         }
         else {
             return {
                 "referer": `${this.baseUrl}/`,
-                "accept": "image/avif,image/webp,image/apng,image/*,*/*;q=0.8"
+                "accept": "image/avif,image/webp,image/apng,image/*;q=0.8"
             };
         }
     }
 }
 exports.Madara = Madara;
 
-},{"./MadaraParser":26,"paperback-extensions-common":4}],26:[function(require,module,exports){
+},{"./MadaraParser":27,"paperback-extensions-common":4}],27:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Parser = void 0;
@@ -713,7 +728,7 @@ class Parser {
         // For each available chapter..
         for (let obj of $('li.wp-manga-chapter  ').toArray()) {
             let id = ($('a', $(obj)).first().attr('href') || '').replace(`${source.baseUrl}/${source.sourceTraversalPathName}/${realTitle}/`, '').replace(/\/$/, '');
-            let chapNum = (_d = (_c = (_b = $('a', $(obj)).first().attr('href')) === null || _b === void 0 ? void 0 : _b.toLowerCase()) === null || _c === void 0 ? void 0 : _c.match(/chapter-\D*(\d*\.?\d*)/)) !== null && _d !== void 0 ? _d : '';
+            let chapNum = (_d = (_c = (_b = $('a', $(obj)).first().attr('href')) === null || _b === void 0 ? void 0 : _b.toLowerCase()) === null || _c === void 0 ? void 0 : _c.match(/chapter-\D*(\d*\.?\d*)/)) === null || _d === void 0 ? void 0 : _d.pop();
             let releaseDate = $('i', $(obj)).length > 0 ? $('i', $(obj)).text() : (_e = $('.c-new-tag a', $(obj)).attr('title')) !== null && _e !== void 0 ? _e : '';
             if (typeof id === 'undefined') {
                 throw (`Could not parse out ID when getting chapters for ${mangaId}`);
@@ -722,7 +737,7 @@ class Parser {
                 id: id,
                 mangaId: realTitle !== null && realTitle !== void 0 ? realTitle : '',
                 langCode: (_f = source.languageCode) !== null && _f !== void 0 ? _f : paperback_extensions_common_1.LanguageCode.UNKNOWN,
-                chapNum: Number(chapNum[1]),
+                chapNum: Number(chapNum),
                 time: source.convertTime(releaseDate)
             }));
         }
@@ -848,7 +863,7 @@ class Parser {
                 sortedChapters.push(c);
             }
         });
-        sortedChapters.sort((a, b) => (a.id > b.id) ? 1 : -1);
+        sortedChapters.sort((a, b) => (a.chapNum - b.chapNum) ? -1 : 1);
         return sortedChapters;
     }
     decodeHTMLEntity(str) {
@@ -859,7 +874,7 @@ class Parser {
 }
 exports.Parser = Parser;
 
-},{"paperback-extensions-common":4}],27:[function(require,module,exports){
+},{"paperback-extensions-common":4}],28:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Toonily = exports.ToonilyInfo = void 0;
@@ -898,5 +913,5 @@ class Toonily extends Madara_1.Madara {
 }
 exports.Toonily = Toonily;
 
-},{"../Madara":25,"paperback-extensions-common":4}]},{},[27])(27)
+},{"../Madara":26,"paperback-extensions-common":4}]},{},[28])(28)
 });
