@@ -112,10 +112,10 @@ describe('Manhuaus Tests', function () {
         expect(updates[0], "No updates").to.not.be.empty;
     })
 
-    it("Testing get tags", async () => {
-        let updates = await wrapper.getTags(source)
-        expect(updates, "No server response").to.exist
-        expect(updates, "Empty server response").to.not.be.empty
+    it("Get tags", async () => {
+        let tags = await wrapper.getTags(source)
+        expect(tags, "No server response").to.exist
+        expect(tags, "Empty server response").to.not.be.empty
     })
 
 })
