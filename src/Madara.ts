@@ -96,7 +96,7 @@ export abstract class Madara extends Source {
 
     async getChapterDetails(mangaId: string, chapterId: string): Promise<ChapterDetails> {
         const request = createRequestObject({
-            url: `${this.baseUrl}/${this.sourceTraversalPathName}/${mangaId}/${chapterId}/`,
+            url: `${this.baseUrl}/${this.sourceTraversalPathName}/${chapterId}/`,
             method: 'GET',
             headers: this.constructHeaders({}),
             cookies: [createCookie({name: 'wpmanga-adault', value: "1", domain: this.baseUrl})]
@@ -357,13 +357,13 @@ export abstract class Madara extends Source {
             return {
                 "referer": `${this.baseUrl}/`,
                 "user-agent": this.userAgentRandomizer,
-                "accept": "image/avif,image/webp,image/apng,image/*;q=0.8"
+                "accept": "image/avif,image/apng,image/jpeg;q=0.9,image/png;q=0.9,image/*;q=0.8"
             }
         }
         else {
             return {
                 "referer": `${this.baseUrl}/`,
-                "accept": "image/avif,image/webp,image/apng,image/*;q=0.8"
+                "accept": "image/avif,image/apng,image/jpeg;q=0.9,image/png;q=0.9,image/*;q=0.8"
             }
         }
     }

@@ -17,7 +17,7 @@ export class Parser {
         let author = this.decodeHTMLEntity($('div.author-content').first().text().replace("\\n", '').trim()).replace('Updating', 'Unknown')
         let artist = this.decodeHTMLEntity($('div.artist-content').first().text().replace("\\n", '').trim()).replace('Updating', 'Unknown')
         let summary = this.decodeHTMLEntity($('div.description-summary').first().text()).replace('Show more', '').trim()
-        let image = encodeURI($('div.summary_image img').first().attr('data-src') ?? '')
+        let image = encodeURI(this.getImageSrc($('div.summary_image img').first()))
         let rating = $('span.total_votes').text().replace('Your Rating', '')
         let isOngoing = $('div.summary-content', $('div.post-content_item').last()).text().toLowerCase().trim() == "ongoing"
         let genres: Tag[] = []
@@ -40,7 +40,7 @@ export class Parser {
         return createManga({
             id: numericId,
             titles: [title],
-            image: image,
+            image: image ?? '',
             author: author,
             artist: artist,
             tags: tagSections,
@@ -63,7 +63,7 @@ export class Parser {
 
         // For each available chapter..
         for (let obj of $('li.wp-manga-chapter  ').toArray()) {
-            let id = ($('a', $(obj)).first().attr('href') || '').replace(`${source.baseUrl}/${source.sourceTraversalPathName}/${realTitle}/`, '').replace(/\/$/, '')
+            let id = ($('a', $(obj)).first().attr('href') || '').replace(`${source.baseUrl}/${source.sourceTraversalPathName}/`, '').replace(/\/$/, '')
             let chapNum = $('a', $(obj)).first().attr('href')?.toLowerCase()?.match(/chapter-\D*(\d*\.?\d*)/)?.pop()
             let releaseDate = $('i', $(obj)).length > 0 ? $('i', $(obj)).text() : $('.c-new-tag a', $(obj)).attr('title') ?? ''
 
@@ -72,7 +72,7 @@ export class Parser {
             }
             chapters.push(createChapter({
                 id: id,
-                mangaId: realTitle ?? '',
+                mangaId: mangaId,
                 langCode: source.languageCode ?? LanguageCode.UNKNOWN,
                 chapNum: Number(chapNum),
                 time: source.convertTime(releaseDate)
@@ -86,9 +86,7 @@ export class Parser {
         let pages: string[] = []
 
         for (let obj of $(selector).toArray()) {
-            let imageObj = $('img', $(obj))
-            let hasDataSrc = typeof imageObj.attr('data-src') != 'undefined'
-            let page = hasDataSrc ? imageObj.attr('data-src') : imageObj.attr('src')
+            let page = encodeURI(this.getImageSrc($('img', $(obj))))
 
             if (!page) {
                 throw(`Could not parse page for ${mangaId}/${chapterId}`)
@@ -128,7 +126,7 @@ export class Parser {
         for (let obj of $(source.searchMangaSelector).toArray()) {
             let id = ($('a', $(obj)).attr('href') ?? '').replace(`${source.baseUrl}/${source.sourceTraversalPathName}/`, '').replace(/\/$/, '')
             let title = createIconText({text: this.decodeHTMLEntity($('a', $(obj)).attr('title') ?? '')})
-            let image = $('img', $(obj)).attr('data-src')
+            let image = encodeURI(this.getImageSrc($('img', $(obj))))
 
             if (typeof id === 'undefined' || typeof image === 'undefined' || typeof title.text === 'undefined') {
                 if(id.includes(source.baseUrl.replace(/\/$/, ''))) continue
@@ -149,7 +147,7 @@ export class Parser {
         let items: MangaTile[] = []
 
         for (let obj of $('div.page-item-detail').toArray()) {
-            let image = encodeURI($('img', $(obj)).attr('data-src') ?? '')
+            let image = encodeURI(this.getImageSrc($('img', $(obj))) ?? '')
             let title = this.decodeHTMLEntity($('a', $('h3.h5', $(obj))).text())
             let id = $('a', $('h3.h5', $(obj))).attr('href')?.replace(`${source.baseUrl}/${source.sourceTraversalPathName}/`, '').replace(/\/$/, '')
 
@@ -212,6 +210,12 @@ export class Parser {
         })
         sortedChapters.sort((a, b) => (a.chapNum - b.chapNum) ? -1 : 1)
         return sortedChapters
+    }
+
+    getImageSrc(imageObj: Cheerio | undefined): string {
+        let hasDataSrc = typeof imageObj?.attr('data-src') != 'undefined'
+        let image = hasDataSrc ? imageObj?.attr('data-src') : imageObj?.attr('src')
+        return image ?? ''
     }
 
     decodeHTMLEntity(str: string): string {
