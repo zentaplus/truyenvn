@@ -406,7 +406,7 @@ class Madara extends paperback_extensions_common_1.Source {
     getChapterDetails(mangaId, chapterId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `${this.baseUrl}/${this.sourceTraversalPathName}/${mangaId}/${chapterId}/`,
+                url: `${this.baseUrl}/${this.sourceTraversalPathName}/${chapterId}/`,
                 method: 'GET',
                 headers: this.constructHeaders({}),
                 cookies: [createCookie({ name: 'wpmanga-adault', value: "1", domain: this.baseUrl })]
@@ -660,13 +660,13 @@ class Madara extends paperback_extensions_common_1.Source {
             return {
                 "referer": `${this.baseUrl}/`,
                 "user-agent": this.userAgentRandomizer,
-                "accept": "image/avif,image/webp,image/apng,image/*;q=0.8"
+                "accept": "image/avif,image/apng,image/jpeg;q=0.9,image/png;q=0.9,image/*;q=0.8"
             };
         }
         else {
             return {
                 "referer": `${this.baseUrl}/`,
-                "accept": "image/avif,image/webp,image/apng,image/*;q=0.8"
+                "accept": "image/avif,image/apng,image/jpeg;q=0.9,image/png;q=0.9,image/*;q=0.8"
             };
         }
     }
@@ -680,13 +680,13 @@ exports.Parser = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 class Parser {
     parseMangaDetails($, mangaId) {
-        var _a, _b, _c;
+        var _a, _b;
         let numericId = $('a.wp-manga-action-button').attr('data-post');
         let title = this.decodeHTMLEntity($('div.post-title h1').first().text().replace(/NEW/, '').replace(/HOT/, '').replace('\\n', '').trim());
         let author = this.decodeHTMLEntity($('div.author-content').first().text().replace("\\n", '').trim()).replace('Updating', 'Unknown');
         let artist = this.decodeHTMLEntity($('div.artist-content').first().text().replace("\\n", '').trim()).replace('Updating', 'Unknown');
         let summary = this.decodeHTMLEntity($('div.description-summary').first().text()).replace('Show more', '').trim();
-        let image = encodeURI((_a = $('div.summary_image img').first().attr('data-src')) !== null && _a !== void 0 ? _a : '');
+        let image = encodeURI(this.getImageSrc($('div.summary_image img').first()));
         let rating = $('span.total_votes').text().replace('Your Rating', '');
         let isOngoing = $('div.summary-content', $('div.post-content_item').last()).text().toLowerCase().trim() == "ongoing";
         let genres = [];
@@ -694,7 +694,7 @@ class Parser {
         // Grab genres and check for smut tag
         for (let obj of $('div.genres-content a').toArray()) {
             let label = $(obj).text();
-            let id = (_c = (_b = $(obj).attr('href')) === null || _b === void 0 ? void 0 : _b.split('/')[4]) !== null && _c !== void 0 ? _c : label;
+            let id = (_b = (_a = $(obj).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/')[4]) !== null && _b !== void 0 ? _b : label;
             if (label.toLowerCase().includes('smut'))
                 hentai = true;
             genres.push(createTag({ label: label, id: id }));
@@ -707,7 +707,7 @@ class Parser {
         return createManga({
             id: numericId,
             titles: [title],
-            image: image,
+            image: image !== null && image !== void 0 ? image : '',
             author: author,
             artist: artist,
             tags: tagSections,
@@ -727,7 +727,7 @@ class Parser {
         }
         // For each available chapter..
         for (let obj of $('li.wp-manga-chapter  ').toArray()) {
-            let id = ($('a', $(obj)).first().attr('href') || '').replace(`${source.baseUrl}/${source.sourceTraversalPathName}/${realTitle}/`, '').replace(/\/$/, '');
+            let id = ($('a', $(obj)).first().attr('href') || '').replace(`${source.baseUrl}/${source.sourceTraversalPathName}/`, '').replace(/\/$/, '');
             let chapNum = (_d = (_c = (_b = $('a', $(obj)).first().attr('href')) === null || _b === void 0 ? void 0 : _b.toLowerCase()) === null || _c === void 0 ? void 0 : _c.match(/chapter-\D*(\d*\.?\d*)/)) === null || _d === void 0 ? void 0 : _d.pop();
             let releaseDate = $('i', $(obj)).length > 0 ? $('i', $(obj)).text() : (_e = $('.c-new-tag a', $(obj)).attr('title')) !== null && _e !== void 0 ? _e : '';
             if (typeof id === 'undefined') {
@@ -735,7 +735,7 @@ class Parser {
             }
             chapters.push(createChapter({
                 id: id,
-                mangaId: realTitle !== null && realTitle !== void 0 ? realTitle : '',
+                mangaId: mangaId,
                 langCode: (_f = source.languageCode) !== null && _f !== void 0 ? _f : paperback_extensions_common_1.LanguageCode.UNKNOWN,
                 chapNum: Number(chapNum),
                 time: source.convertTime(releaseDate)
@@ -746,9 +746,7 @@ class Parser {
     parseChapterDetails($, mangaId, chapterId, selector) {
         let pages = [];
         for (let obj of $(selector).toArray()) {
-            let imageObj = $('img', $(obj));
-            let hasDataSrc = typeof imageObj.attr('data-src') != 'undefined';
-            let page = hasDataSrc ? imageObj.attr('data-src') : imageObj.attr('src');
+            let page = encodeURI(this.getImageSrc($('img', $(obj))));
             if (!page) {
                 throw (`Could not parse page for ${mangaId}/${chapterId}`);
             }
@@ -786,7 +784,7 @@ class Parser {
         for (let obj of $(source.searchMangaSelector).toArray()) {
             let id = ((_a = $('a', $(obj)).attr('href')) !== null && _a !== void 0 ? _a : '').replace(`${source.baseUrl}/${source.sourceTraversalPathName}/`, '').replace(/\/$/, '');
             let title = createIconText({ text: this.decodeHTMLEntity((_b = $('a', $(obj)).attr('title')) !== null && _b !== void 0 ? _b : '') });
-            let image = $('img', $(obj)).attr('data-src');
+            let image = encodeURI(this.getImageSrc($('img', $(obj))));
             if (typeof id === 'undefined' || typeof image === 'undefined' || typeof title.text === 'undefined') {
                 if (id.includes(source.baseUrl.replace(/\/$/, '')))
                     continue;
@@ -805,7 +803,7 @@ class Parser {
         var _a, _b;
         let items = [];
         for (let obj of $('div.page-item-detail').toArray()) {
-            let image = encodeURI((_a = $('img', $(obj)).attr('data-src')) !== null && _a !== void 0 ? _a : '');
+            let image = encodeURI((_a = this.getImageSrc($('img', $(obj)))) !== null && _a !== void 0 ? _a : '');
             let title = this.decodeHTMLEntity($('a', $('h3.h5', $(obj))).text());
             let id = (_b = $('a', $('h3.h5', $(obj))).attr('href')) === null || _b === void 0 ? void 0 : _b.replace(`${source.baseUrl}/${source.sourceTraversalPathName}/`, '').replace(/\/$/, '');
             if (!id || !title || !image) {
@@ -865,6 +863,11 @@ class Parser {
         });
         sortedChapters.sort((a, b) => (a.chapNum - b.chapNum) ? -1 : 1);
         return sortedChapters;
+    }
+    getImageSrc(imageObj) {
+        let hasDataSrc = typeof (imageObj === null || imageObj === void 0 ? void 0 : imageObj.attr('data-src')) != 'undefined';
+        let image = hasDataSrc ? imageObj === null || imageObj === void 0 ? void 0 : imageObj.attr('data-src') : imageObj === null || imageObj === void 0 ? void 0 : imageObj.attr('src');
+        return image !== null && image !== void 0 ? image : '';
     }
     decodeHTMLEntity(str) {
         return str.replace(/&#(\d+);/g, function (match, dec) {

@@ -325,6 +325,43 @@ __exportStar(require("./UserForm"), exports);
 
 },{"./Chapter":5,"./ChapterDetails":6,"./Constants":7,"./HomeSection":8,"./Languages":9,"./Manga":10,"./MangaTile":11,"./MangaUpdate":12,"./OAuth":13,"./PagedResults":14,"./RequestHeaders":15,"./RequestManager":16,"./RequestObject":17,"./ResponseObject":18,"./SearchRequest":19,"./SourceInfo":20,"./SourceTag":21,"./TagSection":22,"./TrackObject":23,"./UserForm":24}],26:[function(require,module,exports){
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.HiperDex = exports.HiperDexInfo = void 0;
+const paperback_extensions_common_1 = require("paperback-extensions-common");
+const Madara_1 = require("../Madara");
+const HIPERDEX_DOMAIN = "https://hiperdex.com";
+exports.HiperDexInfo = {
+    version: '1.0.0',
+    name: 'HiperDex',
+    description: 'Extension that pulls manga from hiperdex.com',
+    author: 'GameFuzzy',
+    authorWebsite: 'http://github.com/gamefuzzy',
+    icon: "icon.png",
+    hentaiSource: false,
+    websiteBaseURL: HIPERDEX_DOMAIN,
+    sourceTags: [
+        {
+            text: "Notifications",
+            type: paperback_extensions_common_1.TagType.GREEN
+        },
+        {
+            text: "18+",
+            type: paperback_extensions_common_1.TagType.YELLOW
+        }
+    ]
+};
+class HiperDex extends Madara_1.Madara {
+    constructor() {
+        super(...arguments);
+        this.baseUrl = HIPERDEX_DOMAIN;
+        this.languageCode = paperback_extensions_common_1.LanguageCode.ENGLISH;
+        this.hasAdvancedSearchPage = true;
+    }
+}
+exports.HiperDex = HiperDex;
+
+},{"../Madara":27,"paperback-extensions-common":4}],27:[function(require,module,exports){
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -673,7 +710,7 @@ class Madara extends paperback_extensions_common_1.Source {
 }
 exports.Madara = Madara;
 
-},{"./MadaraParser":27,"paperback-extensions-common":4}],27:[function(require,module,exports){
+},{"./MadaraParser":28,"paperback-extensions-common":4}],28:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Parser = void 0;
@@ -877,39 +914,5 @@ class Parser {
 }
 exports.Parser = Parser;
 
-},{"paperback-extensions-common":4}],28:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ManhuaPlus = exports.ManhuaPlusInfo = void 0;
-const paperback_extensions_common_1 = require("paperback-extensions-common");
-const Madara_1 = require("../Madara");
-const MANHUAPLUS_DOMAIN = "https://manhuaplus.com";
-exports.ManhuaPlusInfo = {
-    version: '1.0.0',
-    name: 'ManhuaPlus',
-    description: 'Extension that pulls manga from manhuaplus.com',
-    author: 'GameFuzzy',
-    authorWebsite: 'http://github.com/gamefuzzy',
-    icon: "icon.png",
-    hentaiSource: false,
-    websiteBaseURL: MANHUAPLUS_DOMAIN,
-    sourceTags: [
-        {
-            text: "Notifications",
-            type: paperback_extensions_common_1.TagType.GREEN
-        }
-    ]
-};
-class ManhuaPlus extends Madara_1.Madara {
-    constructor() {
-        super(...arguments);
-        this.baseUrl = MANHUAPLUS_DOMAIN;
-        this.languageCode = paperback_extensions_common_1.LanguageCode.ENGLISH;
-        this.hasAdvancedSearchPage = true;
-        this.chapterDetailsSelector = 'li.blocks-gallery-item';
-    }
-}
-exports.ManhuaPlus = ManhuaPlus;
-
-},{"../Madara":26,"paperback-extensions-common":4}]},{},[28])(28)
+},{"paperback-extensions-common":4}]},{},[26])(26)
 });
