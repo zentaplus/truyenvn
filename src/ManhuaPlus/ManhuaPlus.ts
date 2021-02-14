@@ -24,5 +24,5 @@ export class ManhuaPlus extends Madara {
     baseUrl: string = MANHUAPLUS_DOMAIN
     languageCode: LanguageCode = LanguageCode.ENGLISH
     hasAdvancedSearchPage = true
-    chapterDetailsSelector: string = 'li.blocks-gallery-item'
+    chapterDetailsSelector: string = 'li.blocks-gallery-item > img'
 }

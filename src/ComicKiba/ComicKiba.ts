@@ -24,4 +24,5 @@ export class ComicKiba extends Madara {
     baseUrl: string = COMICKIBA_DOMAIN
     languageCode: LanguageCode = LanguageCode.ENGLISH
     hasAdvancedSearchPage = true
+    chapterDetailsSelector = 'li.blocks-gallery-item img:nth-child(1), div.reading-content p > img, .read-container .reading-content img'
 }

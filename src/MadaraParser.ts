@@ -86,7 +86,7 @@ export class Parser {
         let pages: string[] = []
 
         for (let obj of $(selector).toArray()) {
-            let page = encodeURI(this.getImageSrc($('img', $(obj))))
+            let page = encodeURI(this.getImageSrc($(obj)))
 
             if (!page) {
                 throw(`Could not parse page for ${mangaId}/${chapterId}`)

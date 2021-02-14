@@ -48,7 +48,7 @@ export abstract class Madara extends Source {
      * each page while on a chapter page. This is the selector
      * which is looped over. This may be overridden if required.
      */
-    chapterDetailsSelector: string = "div.page-break"
+    chapterDetailsSelector: string = "div.page-break > img"
 
     /**
      * Set to false if your source has individual buttons for each page as opposed to a 'LOAD MORE' button
