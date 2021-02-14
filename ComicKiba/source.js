@@ -352,6 +352,7 @@ class ComicKiba extends Madara_1.Madara {
         this.baseUrl = COMICKIBA_DOMAIN;
         this.languageCode = paperback_extensions_common_1.LanguageCode.ENGLISH;
         this.hasAdvancedSearchPage = true;
+        this.chapterDetailsSelector = 'li.blocks-gallery-item img:nth-child(1), div.reading-content p > img, .read-container .reading-content img';
     }
 }
 exports.ComicKiba = ComicKiba;
@@ -395,7 +396,7 @@ class Madara extends paperback_extensions_common_1.Source {
          * each page while on a chapter page. This is the selector
          * which is looped over. This may be overridden if required.
          */
-        this.chapterDetailsSelector = "div.page-break";
+        this.chapterDetailsSelector = "div.page-break > img";
         /**
          * Set to false if your source has individual buttons for each page as opposed to a 'LOAD MORE' button
          */
@@ -779,7 +780,7 @@ class Parser {
     parseChapterDetails($, mangaId, chapterId, selector) {
         let pages = [];
         for (let obj of $(selector).toArray()) {
-            let page = encodeURI(this.getImageSrc($('img', $(obj))));
+            let page = encodeURI(this.getImageSrc($(obj)));
             if (!page) {
                 throw (`Could not parse page for ${mangaId}/${chapterId}`);
             }
