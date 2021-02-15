@@ -215,7 +215,7 @@ export class Parser {
     getImageSrc(imageObj: Cheerio | undefined): string {
         let hasDataSrc = typeof imageObj?.attr('data-src') != 'undefined'
         let image = hasDataSrc ? imageObj?.attr('data-src') : imageObj?.attr('src')
-        return image ?? ''
+        return image?.trim() ?? ''
     }
 
     decodeHTMLEntity(str: string): string {
