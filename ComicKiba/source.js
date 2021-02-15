@@ -762,7 +762,8 @@ class Parser {
         // For each available chapter..
         for (let obj of $('li.wp-manga-chapter  ').toArray()) {
             let id = ($('a', $(obj)).first().attr('href') || '').replace(`${source.baseUrl}/${source.sourceTraversalPathName}/`, '').replace(/\/$/, '');
-            let chapNum = (_d = (_c = (_b = $('a', $(obj)).first().attr('href')) === null || _b === void 0 ? void 0 : _b.toLowerCase()) === null || _c === void 0 ? void 0 : _c.match(/chapter-\D*(\d*\.?\d*)/)) === null || _d === void 0 ? void 0 : _d.pop();
+            let chapNum = Number((_d = (_c = (_b = $('a', $(obj)).first().attr('href')) === null || _b === void 0 ? void 0 : _b.toLowerCase()) === null || _c === void 0 ? void 0 : _c.match(/chapter-\D*(\d*\.?\d*)/)) === null || _d === void 0 ? void 0 : _d.pop());
+            let chapName = $('a', $(obj)).first().text();
             let releaseDate = $('i', $(obj)).length > 0 ? $('i', $(obj)).text() : (_e = $('.c-new-tag a', $(obj)).attr('title')) !== null && _e !== void 0 ? _e : '';
             if (typeof id === 'undefined') {
                 throw (`Could not parse out ID when getting chapters for ${mangaId}`);
@@ -771,7 +772,8 @@ class Parser {
                 id: id,
                 mangaId: mangaId,
                 langCode: (_f = source.languageCode) !== null && _f !== void 0 ? _f : paperback_extensions_common_1.LanguageCode.UNKNOWN,
-                chapNum: Number(chapNum),
+                chapNum: Number.isNaN(chapNum) ? 0 : chapNum,
+                name: Number.isNaN(chapNum) ? chapName : '',
                 time: source.convertTime(releaseDate)
             }));
         }
