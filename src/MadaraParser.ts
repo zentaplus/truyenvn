@@ -145,7 +145,7 @@ export class Parser {
             // If we do not have a valid image, something is wrong with the generic parsing logic. A source should always remedy this with
             // a custom implementation.
             if(!image) {
-                throw(`Could not parse out a valid image while parsing manga details for manga: ${mangaId}`)
+                throw(`Could not parse out a valid image while parsing apart search results`)
             }
 
             results.push(createMangaTile({
