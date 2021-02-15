@@ -865,9 +865,10 @@ class Parser {
         return sortedChapters;
     }
     getImageSrc(imageObj) {
+        var _a;
         let hasDataSrc = typeof (imageObj === null || imageObj === void 0 ? void 0 : imageObj.attr('data-src')) != 'undefined';
         let image = hasDataSrc ? imageObj === null || imageObj === void 0 ? void 0 : imageObj.attr('data-src') : imageObj === null || imageObj === void 0 ? void 0 : imageObj.attr('src');
-        return image !== null && image !== void 0 ? image : '';
+        return (_a = image === null || image === void 0 ? void 0 : image.trim()) !== null && _a !== void 0 ? _a : '';
     }
     decodeHTMLEntity(str) {
         return str.replace(/&#(\d+);/g, function (match, dec) {
