@@ -846,7 +846,7 @@ class Parser {
             let title = this.decodeHTMLEntity($('a', $('h3.h5', $(obj))).text());
             let id = (_b = $('a', $('h3.h5', $(obj))).attr('href')) === null || _b === void 0 ? void 0 : _b.replace(`${source.baseUrl}/${source.sourceTraversalPathName}/`, '').replace(/\/$/, '');
             if (!id || !title || !image) {
-                throw (`Failed to parse homepage sections for ${source.baseUrl}/${source.homePage}/`);
+                throw (`Failed to parse homepage sections for ${source.baseUrl}/`);
             }
             items.push(createMangaTile({
                 id: id,
