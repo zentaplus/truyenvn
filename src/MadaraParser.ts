@@ -154,7 +154,7 @@ export class Parser {
             let id = $('a', $('h3.h5', $(obj))).attr('href')?.replace(`${source.baseUrl}/${source.sourceTraversalPathName}/`, '').replace(/\/$/, '')
 
             if (!id || !title || !image) {
-                throw(`Failed to parse homepage sections for ${source.baseUrl}/${source.homePage}/`)
+                throw(`Failed to parse homepage sections for ${source.baseUrl}/`)
             }
 
             items.push(createMangaTile({
