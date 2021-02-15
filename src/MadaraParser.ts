@@ -37,10 +37,16 @@ export class Parser {
             throw(`Could not parse out the data-id for ${mangaId} - This method might need overridden in the implementing source`)
         }
 
+        // If we do not have a valid image, something is wrong with the generic parsing logic. A source should always remedy this with
+        // a custom implementation.
+        if(!image) {
+            throw(`Could not parse out a valid image while parsing manga details for manga: ${mangaId}`)
+        }
+
         return createManga({
             id: numericId,
             titles: [title],
-            image: image ?? '',
+            image: image,
             author: author,
             artist: artist,
             tags: tagSections,
@@ -76,7 +82,7 @@ export class Parser {
                 mangaId: mangaId,
                 langCode: source.languageCode ?? LanguageCode.UNKNOWN,
                 chapNum: Number.isNaN(chapNum) ? 0 : chapNum,
-                name: Number.isNaN(chapNum) ? chapName : '',
+                name: Number.isNaN(chapNum) ? chapName : '', 
                 time: source.convertTime(releaseDate)
             }))
         }
@@ -136,10 +142,16 @@ export class Parser {
                 throw(`Failed to parse searchResult for ${source.baseUrl} using ${source.searchMangaSelector} as a loop selector`)
             }
 
+            // If we do not have a valid image, something is wrong with the generic parsing logic. A source should always remedy this with
+            // a custom implementation.
+            if(!image) {
+                throw(`Could not parse out a valid image while parsing manga details for manga: ${mangaId}`)
+            }
+
             results.push(createMangaTile({
                 id: id,
                 title: title,
-                image: image ?? ''
+                image: image
             }))
         }
         return results
