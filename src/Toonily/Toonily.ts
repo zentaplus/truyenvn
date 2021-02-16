@@ -3,9 +3,9 @@ import {Madara} from '../Madara'
 
 const TOONILY_DOMAIN = "https://toonily.com"
 
-export const ToonilyInfo: SourceInfo = {
+export const ToonilyResetCacheInfo: SourceInfo = {
     version: '1.0.0',
-    name: 'Toonily',
+    name: 'ToonilyResetCache',
     description: 'Extension that pulls manga from toonily.com',
     author: 'GameFuzzy',
     authorWebsite: 'http://github.com/gamefuzzy',
@@ -24,7 +24,7 @@ export const ToonilyInfo: SourceInfo = {
     ]
 }
 
-export class Toonily extends Madara {
+export class ToonilyResetCache extends Madara {
     baseUrl: string = TOONILY_DOMAIN
     languageCode: LanguageCode = LanguageCode.ENGLISH
     hasAdvancedSearchPage: boolean = true
