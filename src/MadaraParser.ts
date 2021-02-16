@@ -136,16 +136,10 @@ export class Parser {
             let title = createIconText({text: this.decodeHTMLEntity($('a', $(obj)).attr('title') ?? '')})
             let image = encodeURI(this.getImageSrc($('img', $(obj))))
 
-            if (typeof id === 'undefined' || typeof image === 'undefined' || typeof title.text === 'undefined') {
+            if (!id || !image || !title.text) {
                 if(id.includes(source.baseUrl.replace(/\/$/, ''))) continue
                 // Something went wrong with our parsing, return a detailed error
                 throw(`Failed to parse searchResult for ${source.baseUrl} using ${source.searchMangaSelector} as a loop selector`)
-            }
-
-            // If we do not have a valid image, something is wrong with the generic parsing logic. A source should always remedy this with
-            // a custom implementation.
-            if(!image) {
-                throw(`Could not parse out a valid image while parsing apart search results`)
             }
 
             results.push(createMangaTile({

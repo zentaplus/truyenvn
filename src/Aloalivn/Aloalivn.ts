@@ -1,32 +1,28 @@
 import {LanguageCode, SourceInfo, TagType} from "paperback-extensions-common";
 import {Madara} from '../Madara'
 
-const HIPERDEX_DOMAIN = "https://hiperdex.com"
+const ALOALIVN_DOMAIN = "https://aloalivn.com"
 
-export const HiperDexInfo: SourceInfo = {
+export const AloalivnInfo: SourceInfo = {
     version: '1.0.0',
-    name: 'HiperDex',
-    description: 'Extension that pulls manga from hiperdex.com',
+    name: 'Aloalivn',
+    description: 'Extension that pulls manga from aloalivn.com',
     author: 'GameFuzzy',
     authorWebsite: 'http://github.com/gamefuzzy',
     icon: "icon.png",
     hentaiSource: false,
-    websiteBaseURL: HIPERDEX_DOMAIN,
+    websiteBaseURL: ALOALIVN_DOMAIN,
     sourceTags: [
         {
             text: "Notifications",
             type: TagType.GREEN
-        },
-        {
-            text: "18+",
-            type: TagType.YELLOW
         }
     ]
 }
 
-export class HiperDex extends Madara {
-    baseUrl: string = HIPERDEX_DOMAIN
+export class Aloalivn extends Madara {
+    baseUrl: string = ALOALIVN_DOMAIN
     languageCode: LanguageCode = LanguageCode.ENGLISH
     hasAdvancedSearchPage: boolean = true
-    userAgentRandomizer = ''
+    chapterDetailsSelector: string = 'li.blocks-gallery-item > figure > img'
 }

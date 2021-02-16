@@ -344,11 +344,11 @@ export abstract class Madara extends Source {
         return time
     }
 
-    constructHeaders(headers: any): any {
+    constructHeaders(headers: any, refererPath?: string): any {
         if(this.userAgentRandomizer !== '') {
             headers["user-agent"] = this.userAgentRandomizer
         }
-        headers["referer"] = this.baseUrl
+        headers["referer"] = `${this.baseUrl}${refererPath ?? ''}`
         return headers
     }
 
