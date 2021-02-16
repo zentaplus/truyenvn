@@ -648,11 +648,11 @@ class Madara extends paperback_extensions_common_1.Source {
         }
         return time;
     }
-    constructHeaders(headers) {
+    constructHeaders(headers, refererPath) {
         if (this.userAgentRandomizer !== '') {
             headers["user-agent"] = this.userAgentRandomizer;
         }
-        headers["referer"] = this.baseUrl;
+        headers["referer"] = `${this.baseUrl}${refererPath !== null && refererPath !== void 0 ? refererPath : ''}`;
         return headers;
     }
     globalRequestHeaders() {
@@ -792,16 +792,11 @@ class Parser {
             let id = ((_a = $('a', $(obj)).attr('href')) !== null && _a !== void 0 ? _a : '').replace(`${source.baseUrl}/${source.sourceTraversalPathName}/`, '').replace(/\/$/, '');
             let title = createIconText({ text: this.decodeHTMLEntity((_b = $('a', $(obj)).attr('title')) !== null && _b !== void 0 ? _b : '') });
             let image = encodeURI(this.getImageSrc($('img', $(obj))));
-            if (typeof id === 'undefined' || typeof image === 'undefined' || typeof title.text === 'undefined') {
+            if (!id || !image || !title.text) {
                 if (id.includes(source.baseUrl.replace(/\/$/, '')))
                     continue;
                 // Something went wrong with our parsing, return a detailed error
                 throw (`Failed to parse searchResult for ${source.baseUrl} using ${source.searchMangaSelector} as a loop selector`);
-            }
-            // If we do not have a valid image, something is wrong with the generic parsing logic. A source should always remedy this with
-            // a custom implementation.
-            if (!image) {
-                throw (`Could not parse out a valid image while parsing apart search results`);
             }
             results.push(createMangaTile({
                 id: id,

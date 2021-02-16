@@ -325,6 +325,40 @@ __exportStar(require("./UserForm"), exports);
 
 },{"./Chapter":5,"./ChapterDetails":6,"./Constants":7,"./HomeSection":8,"./Languages":9,"./Manga":10,"./MangaTile":11,"./MangaUpdate":12,"./OAuth":13,"./PagedResults":14,"./RequestHeaders":15,"./RequestManager":16,"./RequestObject":17,"./ResponseObject":18,"./SearchRequest":19,"./SourceInfo":20,"./SourceTag":21,"./TagSection":22,"./TrackObject":23,"./UserForm":24}],26:[function(require,module,exports){
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Aloalivn = exports.AloalivnInfo = void 0;
+const paperback_extensions_common_1 = require("paperback-extensions-common");
+const Madara_1 = require("../Madara");
+const ALOALIVN_DOMAIN = "https://aloalivn.com";
+exports.AloalivnInfo = {
+    version: '1.0.0',
+    name: 'Aloalivn',
+    description: 'Extension that pulls manga from aloalivn.com',
+    author: 'GameFuzzy',
+    authorWebsite: 'http://github.com/gamefuzzy',
+    icon: "icon.png",
+    hentaiSource: false,
+    websiteBaseURL: ALOALIVN_DOMAIN,
+    sourceTags: [
+        {
+            text: "Notifications",
+            type: paperback_extensions_common_1.TagType.GREEN
+        }
+    ]
+};
+class Aloalivn extends Madara_1.Madara {
+    constructor() {
+        super(...arguments);
+        this.baseUrl = ALOALIVN_DOMAIN;
+        this.languageCode = paperback_extensions_common_1.LanguageCode.ENGLISH;
+        this.hasAdvancedSearchPage = true;
+        this.chapterDetailsSelector = 'li.blocks-gallery-item > figure > img';
+    }
+}
+exports.Aloalivn = Aloalivn;
+
+},{"../Madara":27,"paperback-extensions-common":4}],27:[function(require,module,exports){
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -673,7 +707,7 @@ class Madara extends paperback_extensions_common_1.Source {
 }
 exports.Madara = Madara;
 
-},{"./MadaraParser":27,"paperback-extensions-common":4}],27:[function(require,module,exports){
+},{"./MadaraParser":28,"paperback-extensions-common":4}],28:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Parser = void 0;
@@ -885,39 +919,5 @@ class Parser {
 }
 exports.Parser = Parser;
 
-},{"paperback-extensions-common":4}],28:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Manhuaus = exports.ManhuausInfo = void 0;
-const paperback_extensions_common_1 = require("paperback-extensions-common");
-const Madara_1 = require("../Madara");
-const MANHUAUS_DOMAIN = "https://manhuaus.com";
-exports.ManhuausInfo = {
-    version: '1.0.0',
-    name: 'Manhuaus',
-    description: 'Extension that pulls manga from manhuaus.com',
-    author: 'GameFuzzy',
-    authorWebsite: 'http://github.com/gamefuzzy',
-    icon: "icon.png",
-    hentaiSource: false,
-    websiteBaseURL: MANHUAUS_DOMAIN,
-    sourceTags: [
-        {
-            text: "Notifications",
-            type: paperback_extensions_common_1.TagType.GREEN
-        }
-    ]
-};
-class Manhuaus extends Madara_1.Madara {
-    constructor() {
-        super(...arguments);
-        this.baseUrl = MANHUAUS_DOMAIN;
-        this.languageCode = paperback_extensions_common_1.LanguageCode.ENGLISH;
-        this.hasAdvancedSearchPage = true;
-        this.chapterDetailsSelector = 'li.blocks-gallery-item > figure > img';
-    }
-}
-exports.Manhuaus = Manhuaus;
-
-},{"../Madara":26,"paperback-extensions-common":4}]},{},[28])(28)
+},{"paperback-extensions-common":4}]},{},[26])(26)
 });
