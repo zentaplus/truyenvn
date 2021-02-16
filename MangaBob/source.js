@@ -861,13 +861,7 @@ class Parser {
     // UTILITY METHODS
     // Chapter sorting
     sortChapters(chapters) {
-        let sortedChapters = [];
-        chapters.forEach((c) => {
-            var _a;
-            if (((_a = sortedChapters[sortedChapters.indexOf(c)]) === null || _a === void 0 ? void 0 : _a.id) !== (c === null || c === void 0 ? void 0 : c.id)) {
-                sortedChapters.push(c);
-            }
-        });
+        let sortedChapters = chapters.filter((obj, index, arr) => arr.map(mapObj => mapObj.id).indexOf(obj.id) === index);
         sortedChapters.sort((a, b) => (a.chapNum - b.chapNum) ? -1 : 1);
         return sortedChapters;
     }
