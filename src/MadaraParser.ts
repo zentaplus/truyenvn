@@ -210,12 +210,7 @@ export class Parser {
 
     // Chapter sorting
     sortChapters(chapters: Chapter[]): Chapter[] {
-        let sortedChapters: Chapter[] = []
-        chapters.forEach((c) => {
-            if (sortedChapters[sortedChapters.indexOf(c)]?.id !== c?.id) {
-                sortedChapters.push(c)
-            }
-        })
+        let sortedChapters = chapters.filter((obj, index, arr) => arr.map(mapObj => mapObj.id).indexOf(obj.id) === index)
         sortedChapters.sort((a, b) => (a.chapNum - b.chapNum) ? -1 : 1)
         return sortedChapters
     }
