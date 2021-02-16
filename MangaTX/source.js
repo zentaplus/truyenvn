@@ -744,7 +744,7 @@ class Parser {
                 mangaId: mangaId,
                 langCode: (_f = source.languageCode) !== null && _f !== void 0 ? _f : paperback_extensions_common_1.LanguageCode.UNKNOWN,
                 chapNum: Number.isNaN(chapNum) ? 0 : chapNum,
-                name: Number.isNaN(chapNum) ? chapName : '',
+                name: Number.isNaN(chapNum) ? chapName : undefined,
                 time: source.convertTime(releaseDate)
             }));
         }
