@@ -82,7 +82,7 @@ export class Parser {
                 mangaId: mangaId,
                 langCode: source.languageCode ?? LanguageCode.UNKNOWN,
                 chapNum: Number.isNaN(chapNum) ? 0 : chapNum,
-                name: Number.isNaN(chapNum) ? chapName : '', 
+                name: Number.isNaN(chapNum) ? chapName : undefined,
                 time: source.convertTime(releaseDate)
             }))
         }
