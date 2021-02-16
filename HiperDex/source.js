@@ -741,10 +741,15 @@ class Parser {
         if (!numericId) {
             throw (`Could not parse out the data-id for ${mangaId} - This method might need overridden in the implementing source`);
         }
+        // If we do not have a valid image, something is wrong with the generic parsing logic. A source should always remedy this with
+        // a custom implementation.
+        if (!image) {
+            throw (`Could not parse out a valid image while parsing manga details for manga: ${mangaId}`);
+        }
         return createManga({
             id: numericId,
             titles: [title],
-            image: image !== null && image !== void 0 ? image : '',
+            image: image,
             author: author,
             artist: artist,
             tags: tagSections,
@@ -830,10 +835,15 @@ class Parser {
                 // Something went wrong with our parsing, return a detailed error
                 throw (`Failed to parse searchResult for ${source.baseUrl} using ${source.searchMangaSelector} as a loop selector`);
             }
+            // If we do not have a valid image, something is wrong with the generic parsing logic. A source should always remedy this with
+            // a custom implementation.
+            if (!image) {
+                throw (`Could not parse out a valid image while parsing apart search results`);
+            }
             results.push(createMangaTile({
                 id: id,
                 title: title,
-                image: image !== null && image !== void 0 ? image : ''
+                image: image
             }));
         }
         return results;
