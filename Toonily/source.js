@@ -882,13 +882,13 @@ exports.Parser = Parser;
 },{"paperback-extensions-common":4}],28:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ToonilyResetCache = exports.ToonilyResetCacheInfo = void 0;
+exports.Toonily = exports.ToonilyInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const Madara_1 = require("../Madara");
 const TOONILY_DOMAIN = "https://toonily.com";
-exports.ToonilyResetCacheInfo = {
+exports.ToonilyInfo = {
     version: '1.0.0',
-    name: 'ToonilyResetCache',
+    name: 'Toonily',
     description: 'Extension that pulls manga from toonily.com',
     author: 'GameFuzzy',
     authorWebsite: 'http://github.com/gamefuzzy',
@@ -906,7 +906,7 @@ exports.ToonilyResetCacheInfo = {
         }
     ]
 };
-class ToonilyResetCache extends Madara_1.Madara {
+class Toonily extends Madara_1.Madara {
     constructor() {
         super(...arguments);
         this.baseUrl = TOONILY_DOMAIN;
@@ -916,7 +916,7 @@ class ToonilyResetCache extends Madara_1.Madara {
         this.userAgentRandomizer = '';
     }
 }
-exports.ToonilyResetCache = ToonilyResetCache;
+exports.Toonily = Toonily;
 
 },{"../Madara":26,"paperback-extensions-common":4}]},{},[28])(28)
 });
