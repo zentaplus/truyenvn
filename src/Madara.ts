@@ -69,6 +69,7 @@ export abstract class Madara extends Source {
         })
 
         let data = await this.requestManager.schedule(request, 1)
+        this.CloudFlareError(data.status)
         let $ = this.cheerio.load(data.data)
 
         return this.parser.parseMangaDetails($, mangaId)
@@ -89,6 +90,7 @@ export abstract class Madara extends Source {
         })
 
         let data = await this.requestManager.schedule(request, 1)
+        this.CloudFlareError(data.status)
         let $ = this.cheerio.load(data.data)
 
         return this.parser.parseChapterList($, mangaId, this)
@@ -103,6 +105,7 @@ export abstract class Madara extends Source {
         })
 
         let data = await this.requestManager.schedule(request, 1)
+        this.CloudFlareError(data.status)
         let $ = this.cheerio.load(data.data)
 
         return this.parser.parseChapterDetails($, mangaId, chapterId, this.chapterDetailsSelector)
@@ -127,6 +130,7 @@ export abstract class Madara extends Source {
         }
 
         let data = await this.requestManager.schedule(request, 1)
+        this.CloudFlareError(data.status)
         let $ = this.cheerio.load(data.data)
         return this.parser.parseTags($, this.hasAdvancedSearchPage)
     }
@@ -137,6 +141,7 @@ export abstract class Madara extends Source {
 
         const request = this.constructAjaxRequest(page, 50, '', query.title ?? '')
         let data = await this.requestManager.schedule(request, 1)
+        this.CloudFlareError(data.status)
         let $ = this.cheerio.load(data.data)
         let manga = this.parser.parseSearchResults($, this)
         let mData: any = {page: (page + 1)}
@@ -157,6 +162,7 @@ export abstract class Madara extends Source {
             const request = this.constructAjaxRequest(page, 50, '_latest_update', '')
 
             let data = await this.requestManager.schedule(request, 1)
+            this.CloudFlareError(data.status)
             let $ = this.cheerio.load(data.data)
 
             let updatedManga = this.parser.filterUpdatedManga($, time, ids, this)
@@ -215,6 +221,7 @@ export abstract class Madara extends Source {
             // Get the section data
             promises.push(
                 this.requestManager.schedule(section.request, 1).then(response => {
+                    this.CloudFlareError(response.status)
                     const $ = this.cheerio.load(response.data)
                     section.section.items = this.parser.parseHomeSection($, this)
                     sectionCallback(section.section)
@@ -248,6 +255,7 @@ export abstract class Madara extends Source {
         }
         const request = this.constructAjaxRequest(page, 50, sortBy, '')
         let data = await this.requestManager.schedule(request, 1)
+        this.CloudFlareError(data.status)
         let $ = this.cheerio.load(data.data)
         let items: MangaTile[] = this.parser.parseHomeSection($, this)
         // Set up to go to the next page. If we are on the last page, remove the logic.
@@ -279,6 +287,7 @@ export abstract class Madara extends Source {
         })
 
         let data = await this.requestManager.schedule(request, 1)
+        this.CloudFlareError(data.status)
         let $ = this.cheerio.load(data.data)
         let numericId = $('link[rel="shortlink"]').attr('href')?.replace(`${this.baseUrl}/?p=`, '')
         if (!numericId) {
@@ -365,6 +374,12 @@ export abstract class Madara extends Source {
                 "referer": `${this.baseUrl}/`,
                 "accept": "image/avif,image/apng,image/jpeg;q=0.9,image/png;q=0.9,image/*;q=0.8"
             }
+        }
+    }
+
+    CloudFlareError(status: any) {
+        if(status == 503) {
+            throw new Error('CLOUDFLARE BYPASS ERROR:\nPlease go to Settings > Sources > \<\The name of this source\> and press Cloudflare Bypass')
         }
     }
 
