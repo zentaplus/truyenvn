@@ -413,6 +413,7 @@ class Madara extends paperback_extensions_common_1.Source {
                 headers: this.constructHeaders({})
             });
             let data = yield this.requestManager.schedule(request, 1);
+            this.CloudFlareError(data.status);
             let $ = this.cheerio.load(data.data);
             return this.parser.parseMangaDetails($, mangaId);
         });
@@ -431,6 +432,7 @@ class Madara extends paperback_extensions_common_1.Source {
                 })
             });
             let data = yield this.requestManager.schedule(request, 1);
+            this.CloudFlareError(data.status);
             let $ = this.cheerio.load(data.data);
             return this.parser.parseChapterList($, mangaId, this);
         });
@@ -444,6 +446,7 @@ class Madara extends paperback_extensions_common_1.Source {
                 cookies: [createCookie({ name: 'wpmanga-adault', value: "1", domain: this.baseUrl })]
             });
             let data = yield this.requestManager.schedule(request, 1);
+            this.CloudFlareError(data.status);
             let $ = this.cheerio.load(data.data);
             return this.parser.parseChapterDetails($, mangaId, chapterId, this.chapterDetailsSelector);
         });
@@ -466,6 +469,7 @@ class Madara extends paperback_extensions_common_1.Source {
                 });
             }
             let data = yield this.requestManager.schedule(request, 1);
+            this.CloudFlareError(data.status);
             let $ = this.cheerio.load(data.data);
             return this.parser.parseTags($, this.hasAdvancedSearchPage);
         });
@@ -477,6 +481,7 @@ class Madara extends paperback_extensions_common_1.Source {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 0;
             const request = this.constructAjaxRequest(page, 50, '', (_b = query.title) !== null && _b !== void 0 ? _b : '');
             let data = yield this.requestManager.schedule(request, 1);
+            this.CloudFlareError(data.status);
             let $ = this.cheerio.load(data.data);
             let manga = this.parser.parseSearchResults($, this);
             let mData = { page: (page + 1) };
@@ -497,6 +502,7 @@ class Madara extends paperback_extensions_common_1.Source {
             while (loadNextPage) {
                 const request = this.constructAjaxRequest(page, 50, '_latest_update', '');
                 let data = yield this.requestManager.schedule(request, 1);
+                this.CloudFlareError(data.status);
                 let $ = this.cheerio.load(data.data);
                 let updatedManga = this.parser.filterUpdatedManga($, time, ids, this);
                 loadNextPage = updatedManga.loadNextPage;
@@ -551,6 +557,7 @@ class Madara extends paperback_extensions_common_1.Source {
                 sectionCallback(section.section);
                 // Get the section data
                 promises.push(this.requestManager.schedule(section.request, 1).then(response => {
+                    this.CloudFlareError(response.status);
                     const $ = this.cheerio.load(response.data);
                     section.section.items = this.parser.parseHomeSection($, this);
                     sectionCallback(section.section);
@@ -584,6 +591,7 @@ class Madara extends paperback_extensions_common_1.Source {
             }
             const request = this.constructAjaxRequest(page, 50, sortBy, '');
             let data = yield this.requestManager.schedule(request, 1);
+            this.CloudFlareError(data.status);
             let $ = this.cheerio.load(data.data);
             let items = this.parser.parseHomeSection($, this);
             // Set up to go to the next page. If we are on the last page, remove the logic.
@@ -614,6 +622,7 @@ class Madara extends paperback_extensions_common_1.Source {
                 headers: this.constructHeaders({})
             });
             let data = yield this.requestManager.schedule(request, 1);
+            this.CloudFlareError(data.status);
             let $ = this.cheerio.load(data.data);
             let numericId = (_a = $('link[rel="shortlink"]').attr('href')) === null || _a === void 0 ? void 0 : _a.replace(`${this.baseUrl}/?p=`, '');
             if (!numericId) {
@@ -700,6 +709,11 @@ class Madara extends paperback_extensions_common_1.Source {
                 "referer": `${this.baseUrl}/`,
                 "accept": "image/avif,image/apng,image/jpeg;q=0.9,image/png;q=0.9,image/*;q=0.8"
             };
+        }
+    }
+    CloudFlareError(status) {
+        if (status == 503) {
+            throw new Error('CLOUDFLARE BYPASS ERROR:\nPlease go to Settings > Sources > \<\The name of this source\> and press Cloudflare Bypass');
         }
     }
 }
