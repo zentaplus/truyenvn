@@ -361,7 +361,7 @@ export abstract class Madara extends Source {
         return headers
     }
 
-    globalRequestHeaders(): RequestHeaders {
+    async globalRequestHeaders(): Promise<RequestHeaders> {
         if(this.userAgentRandomizer !== '') {
             return {
                 "referer": `${this.baseUrl}/`,
