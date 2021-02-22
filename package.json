@@ -1,8 +1,8 @@
 {
   "name": "madara-extensions",
   "version": "1.0.0",
-  "repositoryName": "Extensions Madara",
-  "description": "Additional sources for Paperback using the Madara template",
+  "repositoryName": "[PROMISES] Madara Extensions",
+  "description": "Contains sources using the Madara template",
   "scripts": {
     "start": "tsc && node dist/api.js",
     "build": "tsc",
