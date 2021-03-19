@@ -94,13 +94,12 @@ export class Parser {
         let pages: string[] = []
 
         for (let obj of $(selector).toArray()) {
-            let page = encodeURI(this.getImageSrc($(obj)))
-
+            let page = this.getImageSrc($(obj))
             if (!page) {
                 throw(`Could not parse page for ${mangaId}/${chapterId}`)
             }
 
-            pages.push(page.replace(/[\t|\n]/g, ''))
+            pages.push(page)
         }
         return createChapterDetails({
             id: chapterId,
@@ -216,9 +215,20 @@ export class Parser {
     }
 
     getImageSrc(imageObj: Cheerio | undefined): string {
-        let hasDataSrc = typeof imageObj?.attr('data-src') != 'undefined'
-        let image = hasDataSrc ? imageObj?.attr('data-src') : imageObj?.attr('src')
-        return image?.trim() ?? ''
+        let image
+        if(typeof imageObj?.attr('data-src') != 'undefined') {
+            image = imageObj?.attr('data-src')
+        }
+        else if (typeof imageObj?.attr('data-lazy-src') != 'undefined') {
+            image = imageObj?.attr('data-lazy-src')
+        }
+        else if (typeof imageObj?.attr('srcset') != 'undefined') {
+            image = imageObj?.attr('srcset')?.split(' ')[0] ?? ''
+        }
+        else {
+            image = imageObj?.attr('src')
+        }
+        return encodeURI(decodeURI(this.decodeHTMLEntity(image?.trim() ?? '')))
     }
 
     decodeHTMLEntity(str: string): string {

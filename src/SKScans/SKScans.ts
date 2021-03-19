@@ -1,17 +1,17 @@
 import {LanguageCode, SourceInfo, TagType} from "paperback-extensions-common";
 import {Madara} from '../Madara'
 
-const MANGATX_DOMAIN = "https://mangatx.com"
+const SKSCANS_DOMAIN = "https://skscans.com"
 
-export const MangaTXInfo: SourceInfo = {
+export const SKScansInfo: SourceInfo = {
     version: '1.1.0',
-    name: 'MangaTX',
-    description: 'Extension that pulls manga from mangatx.com',
+    name: 'SKScans',
+    description: 'Extension that pulls manga from skscans.com',
     author: 'GameFuzzy',
     authorWebsite: 'http://github.com/gamefuzzy',
     icon: "icon.png",
     hentaiSource: false,
-    websiteBaseURL: MANGATX_DOMAIN,
+    websiteBaseURL: SKSCANS_DOMAIN,
     sourceTags: [
         {
             text: "Notifications",
@@ -20,8 +20,7 @@ export const MangaTXInfo: SourceInfo = {
     ]
 }
 
-export class MangaTX extends Madara {
-    baseUrl: string = MANGATX_DOMAIN
+export class SKScans extends Madara {
+    baseUrl: string = SKSCANS_DOMAIN
     languageCode: LanguageCode = LanguageCode.ENGLISH
-    hasAdvancedSearchPage = true
 }

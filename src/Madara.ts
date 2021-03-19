@@ -366,13 +366,13 @@ export abstract class Madara extends Source {
             return {
                 "referer": `${this.baseUrl}/`,
                 "user-agent": this.userAgentRandomizer,
-                "accept": "image/avif,image/apng,image/jpeg;q=0.9,image/png;q=0.9,image/*;q=0.8"
+                "accept": "image/jpeg,image/png,image/*;q=0.8"
             }
         }
         else {
             return {
                 "referer": `${this.baseUrl}/`,
-                "accept": "image/avif,image/apng,image/jpeg;q=0.9,image/png;q=0.9,image/*;q=0.8"
+                "accept": "image/jpeg,image/png,image/*;q=0.8"
             }
         }
     }

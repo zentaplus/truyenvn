@@ -11,3 +11,6 @@ ManhuaPlus
 Manhuaus  
 Toonily  
 WebtoonXYZ  
+LeviatanScans  
+LeviatanScansES  
+SKScans  

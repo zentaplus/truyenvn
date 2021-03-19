@@ -4,7 +4,7 @@ import {Madara} from '../Madara'
 const MANGABOB_DOMAIN = "https://mangabob.com"
 
 export const MangaBobInfo: SourceInfo = {
-    version: '1.0.0',
+    version: '1.1.0',
     name: 'MangaBob',
     description: 'Extension that pulls manga from mangabob.com',
     author: 'GameFuzzy',

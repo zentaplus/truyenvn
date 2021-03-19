@@ -1,13 +1,13 @@
 import cheerio from 'cheerio'
 import { MadaraAPIWrapper } from '../MadaraAPIWrapper'
 import { Madara } from '../Madara'
-import { ArangScans } from '../ArangScans/ArangScans'
+import { LeviatanScans } from '../LeviatanScans/LeviatanScans'
 
-describe('ArangScans Tests', function () {
+describe('LeviatanScans Tests', function () {
 
 
     var wrapper: MadaraAPIWrapper = new MadaraAPIWrapper();
-    var source: Madara = new ArangScans(cheerio);
+    var source: Madara = new LeviatanScans(cheerio);
     var chai = require('chai'), expect = chai.expect, should = chai.should();
     var chaiAsPromised = require('chai-as-promised');
     chai.use(chaiAsPromised);
@@ -17,7 +17,7 @@ describe('ArangScans Tests', function () {
      * Try to choose a manga which is updated frequently, so that the historical checking test can
      * return proper results, as it is limited to searching 30 days back due to extremely long processing times otherwise.
      */
-    var mangaId = "im-destined-for-greatness";
+    var mangaId = "mook-hyang-the-origin";
     var mangaNumericId = ''
 
     // Grab the ID automatically
@@ -61,7 +61,7 @@ describe('ArangScans Tests', function () {
 
     it("Get Chapter Details", async () => {
         let chapters = await wrapper.getChapters(source, mangaNumericId);
-        let data = await wrapper.getChapterDetails(source, mangaId, chapters[1].id);
+        let data = await wrapper.getChapterDetails(source, mangaId, chapters[0].id);
 
         expect(data, "No server response").to.exist;
         expect(data, "Empty server response").to.not.be.empty;
@@ -105,12 +105,7 @@ describe('ArangScans Tests', function () {
         expect(data.title.text, "No title present").to.exist
     })
 
-    it("Testing Notifications", async () => {
-        let updates = await wrapper.filterUpdatedManga(source, new Date("2021-02-01"), [mangaId])
-        expect(updates, "No server response").to.exist
-        expect(updates, "Empty server response").to.not.be.empty
-        expect(updates[0], "No updates").to.not.be.empty;
-    })
+
 
     it("Testing get tags", async () => {
         let updates = await wrapper.getTags(source)
