@@ -1,13 +1,13 @@
 import cheerio from 'cheerio'
 import { MadaraAPIWrapper } from '../MadaraAPIWrapper'
 import { Madara } from '../Madara'
-import { Aloalivn } from '../Aloalivn/Aloalivn'
+import { AkuManga } from '../AkuManga/AkuManga'
 
-describe('Aloalivn Tests', function () {
+describe('AkuManga Tests', function () {
 
 
     var wrapper: MadaraAPIWrapper = new MadaraAPIWrapper();
-    var source: Madara = new Aloalivn(cheerio);
+    var source: Madara = new AkuManga(cheerio);
     var chai = require('chai'), expect = chai.expect, should = chai.should();
     var chaiAsPromised = require('chai-as-promised');
     chai.use(chaiAsPromised);
@@ -17,7 +17,7 @@ describe('Aloalivn Tests', function () {
      * Try to choose a manga which is updated frequently, so that the historical checking test can
      * return proper results, as it is limited to searching 30 days back due to extremely long processing times otherwise.
      */
-    var mangaId = "against-the-gods";
+    var mangaId = "the-beginning-after-the-end";
     var mangaNumericId = ''
 
     // Grab the ID automatically

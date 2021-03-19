@@ -1,17 +1,17 @@
 import {LanguageCode, SourceInfo, TagType} from "paperback-extensions-common";
 import {Madara} from '../Madara'
 
-const ALOALIVN_DOMAIN = "https://aloalivn.com"
+const AKUMANGA_DOMAIN = "https://akumanga.com"
 
-export const AloalivnInfo: SourceInfo = {
+export const AkuMangaInfo: SourceInfo = {
     version: '1.0.0',
-    name: 'Aloalivn',
-    description: 'Extension that pulls manga from aloalivn.com',
+    name: 'AkuManga',
+    description: 'موقع ترجمة المانجا العربية',
     author: 'GameFuzzy',
     authorWebsite: 'http://github.com/gamefuzzy',
     icon: "icon.png",
     hentaiSource: false,
-    websiteBaseURL: ALOALIVN_DOMAIN,
+    websiteBaseURL: AKUMANGA_DOMAIN,
     sourceTags: [
         {
             text: "Notifications",
@@ -20,9 +20,10 @@ export const AloalivnInfo: SourceInfo = {
     ]
 }
 
-export class Aloalivn extends Madara {
-    baseUrl: string = ALOALIVN_DOMAIN
+export class AkuManga extends Madara {
+    baseUrl: string = AKUMANGA_DOMAIN
     languageCode: LanguageCode = LanguageCode.ENGLISH
     hasAdvancedSearchPage: boolean = true
-    chapterDetailsSelector: string = 'li.blocks-gallery-item > figure > img'
+
+
 }
