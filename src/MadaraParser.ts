@@ -171,7 +171,7 @@ export class Parser {
         }
         return items
     }
-
+    /*
     filterUpdatedManga($: CheerioSelector, time: Date, ids: string[], source: any): { updates: string[], loadNextPage: boolean } {
         let passedReferenceTime = false
         let updatedManga: string[] = []
@@ -205,7 +205,7 @@ export class Parser {
 
 
     }
-
+*/
     // UTILITY METHODS
 
     // Chapter sorting
