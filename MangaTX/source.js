@@ -669,13 +669,13 @@ class Madara extends paperback_extensions_common_1.Source {
             return {
                 "referer": `${this.baseUrl}/`,
                 "user-agent": this.userAgentRandomizer,
-                "accept": "image/avif,image/apng,image/jpeg;q=0.9,image/png;q=0.9,image/*;q=0.8"
+                "accept": "image/jpeg,image/png,image/*;q=0.8"
             };
         }
         else {
             return {
                 "referer": `${this.baseUrl}/`,
-                "accept": "image/avif,image/apng,image/jpeg;q=0.9,image/png;q=0.9,image/*;q=0.8"
+                "accept": "image/jpeg,image/png,image/*;q=0.8"
             };
         }
     }
@@ -767,11 +767,11 @@ class Parser {
     parseChapterDetails($, mangaId, chapterId, selector) {
         let pages = [];
         for (let obj of $(selector).toArray()) {
-            let page = encodeURI(this.getImageSrc($(obj)));
+            let page = this.getImageSrc($(obj));
             if (!page) {
                 throw (`Could not parse page for ${mangaId}/${chapterId}`);
             }
-            pages.push(page.replace(/[\t|\n]/g, ''));
+            pages.push(page);
         }
         return createChapterDetails({
             id: chapterId,
@@ -880,10 +880,21 @@ class Parser {
         return sortedChapters;
     }
     getImageSrc(imageObj) {
-        var _a;
-        let hasDataSrc = typeof (imageObj === null || imageObj === void 0 ? void 0 : imageObj.attr('data-src')) != 'undefined';
-        let image = hasDataSrc ? imageObj === null || imageObj === void 0 ? void 0 : imageObj.attr('data-src') : imageObj === null || imageObj === void 0 ? void 0 : imageObj.attr('src');
-        return (_a = image === null || image === void 0 ? void 0 : image.trim()) !== null && _a !== void 0 ? _a : '';
+        var _a, _b, _c;
+        let image;
+        if (typeof (imageObj === null || imageObj === void 0 ? void 0 : imageObj.attr('data-src')) != 'undefined') {
+            image = imageObj === null || imageObj === void 0 ? void 0 : imageObj.attr('data-src');
+        }
+        else if (typeof (imageObj === null || imageObj === void 0 ? void 0 : imageObj.attr('data-lazy-src')) != 'undefined') {
+            image = imageObj === null || imageObj === void 0 ? void 0 : imageObj.attr('data-lazy-src');
+        }
+        else if (typeof (imageObj === null || imageObj === void 0 ? void 0 : imageObj.attr('srcset')) != 'undefined') {
+            image = (_b = (_a = imageObj === null || imageObj === void 0 ? void 0 : imageObj.attr('srcset')) === null || _a === void 0 ? void 0 : _a.split(' ')[0]) !== null && _b !== void 0 ? _b : '';
+        }
+        else {
+            image = imageObj === null || imageObj === void 0 ? void 0 : imageObj.attr('src');
+        }
+        return encodeURI(decodeURI(this.decodeHTMLEntity((_c = image === null || image === void 0 ? void 0 : image.trim()) !== null && _c !== void 0 ? _c : '')));
     }
     decodeHTMLEntity(str) {
         return str.replace(/&#(\d+);/g, function (match, dec) {
@@ -901,7 +912,7 @@ const paperback_extensions_common_1 = require("paperback-extensions-common");
 const Madara_1 = require("../Madara");
 const MANGATX_DOMAIN = "https://mangatx.com";
 exports.MangaTXInfo = {
-    version: '1.0.0',
+    version: '1.1.0',
     name: 'MangaTX',
     description: 'Extension that pulls manga from mangatx.com',
     author: 'GameFuzzy',
