@@ -53,7 +53,8 @@ export class Parser {
             desc: summary,
             status: isOngoing ? MangaStatus.ONGOING : MangaStatus.COMPLETED,
             rating: Number(rating),
-            hentai: hentai
+            //hentai: hentai
+            hentai: false
         })
     }
 
