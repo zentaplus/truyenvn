@@ -767,7 +767,8 @@ class Parser {
             desc: summary,
             status: isOngoing ? paperback_extensions_common_1.MangaStatus.ONGOING : paperback_extensions_common_1.MangaStatus.COMPLETED,
             rating: Number(rating),
-            hentai: hentai
+            //hentai: hentai
+            hentai: false
         });
     }
     parseChapterList($, mangaId, source) {
