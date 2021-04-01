@@ -913,7 +913,7 @@ const paperback_extensions_common_1 = require("paperback-extensions-common");
 const Madara_1 = require("../Madara");
 const WEBTOON_DOMAIN = "https://www.webtoon.xyz";
 exports.WebtoonXYZInfo = {
-    version: '1.0.0',
+    version: '1.1.0',
     name: 'WebtoonXYZ',
     description: 'Extension that pulls manga from Webtoon.XYZ',
     author: 'GameFuzzy',
@@ -934,6 +934,7 @@ class WebtoonXYZ extends Madara_1.Madara {
         this.baseUrl = WEBTOON_DOMAIN;
         this.languageCode = paperback_extensions_common_1.LanguageCode.ENGLISH;
         this.sourceTraversalPathName = 'read';
+        this.userAgentRandomizer = '';
     }
 }
 exports.WebtoonXYZ = WebtoonXYZ;
