@@ -331,7 +331,7 @@ const paperback_extensions_common_1 = require("paperback-extensions-common");
 const Madara_1 = require("../Madara");
 const ARANGSCANS_DOMAIN = "https://arangscans.com";
 exports.ArangScansInfo = {
-    version: '1.1.1',
+    version: '1.1.2',
     name: 'ArangScans',
     description: 'Extension that pulls manga from arangscans.com',
     author: 'GameFuzzy',
@@ -352,6 +352,7 @@ class ArangScans extends Madara_1.Madara {
         this.baseUrl = ARANGSCANS_DOMAIN;
         this.languageCode = paperback_extensions_common_1.LanguageCode.ENGLISH;
         this.userAgentRandomizer = '';
+        this.chapterDetailsParam = "?style=list";
     }
 }
 exports.ArangScans = ArangScans;
@@ -390,6 +391,13 @@ class Madara extends paperback_extensions_common_1.Source {
          * Set to true if your source has advanced search functionality built in.
          */
         this.hasAdvancedSearchPage = false;
+        /**
+         * Different Madara sources might require a extra param in order for the images to be parsed.
+         * Eg. for https://arangscans.com/manga/tesla-note/chapter-3/?style=list "?style=list" would be the param
+         * added to the end of the URL. This will set the page in list style and is needed in order for the
+         * images to be parsed. Params can be addded if required.
+         */
+        this.chapterDetailsParam = "";
         /**
          * Different Madara sources might have a slightly different selector which is required to parse out
          * each page while on a chapter page. This is the selector
@@ -444,7 +452,8 @@ class Madara extends paperback_extensions_common_1.Source {
                 url: `${this.baseUrl}/${this.sourceTraversalPathName}/${chapterId}/`,
                 method: 'GET',
                 headers: this.constructHeaders({}),
-                cookies: [createCookie({ name: 'wpmanga-adault', value: "1", domain: this.baseUrl })]
+                cookies: [createCookie({ name: 'wpmanga-adault', value: "1", domain: this.baseUrl })],
+                param: this.chapterDetailsParam
             });
             let data = yield this.requestManager.schedule(request, 1);
             this.CloudFlareError(data.status);
