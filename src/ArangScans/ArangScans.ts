@@ -24,4 +24,5 @@ export class ArangScans extends Madara {
     baseUrl: string = ARANGSCANS_DOMAIN
     languageCode: LanguageCode = LanguageCode.ENGLISH
     userAgentRandomizer = ''
+    chapterDetailsParam = "?style=list"
 }

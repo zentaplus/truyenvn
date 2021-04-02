@@ -44,6 +44,14 @@ export abstract class Madara extends Source {
     hasAdvancedSearchPage: boolean = false
 
     /**
+     * Different Madara sources might require a extra param in order for the images to be parsed.
+     * Eg. for https://arangscans.com/manga/tesla-note/chapter-3/?style=list "?style=list" would be the param
+     * added to the end of the URL. This will set the page in list style and is needed in order for the
+     * images to be parsed. Params can be addded if required.
+     */
+    chapterDetailsParam: string = ""
+
+    /**
      * Different Madara sources might have a slightly different selector which is required to parse out
      * each page while on a chapter page. This is the selector
      * which is looped over. This may be overridden if required.
@@ -102,7 +110,7 @@ export abstract class Madara extends Source {
             method: 'GET',
             headers: this.constructHeaders({}),
             cookies: [createCookie({name: 'wpmanga-adault', value: "1", domain: this.baseUrl})],
-            param: "?style=list"
+            param: this.chapterDetailsParam
         })
 
         let data = await this.requestManager.schedule(request, 1)
