@@ -4,7 +4,7 @@ import {Madara} from '../Madara'
 const MANHUAPLUS_DOMAIN = "https://manhuaplus.com"
 
 export const ManhuaPlusInfo: SourceInfo = {
-    version: '1.1.0',
+    version: '1.1.1',
     name: 'ManhuaPlus',
     description: 'Extension that pulls manga from manhuaplus.com',
     author: 'GameFuzzy',
