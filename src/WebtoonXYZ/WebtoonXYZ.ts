@@ -16,6 +16,10 @@ export const WebtoonXYZInfo: SourceInfo = {
         {
             text: "Notifications",
             type: TagType.GREEN
+        },
+        {
+            text: "Cloudflare",
+            type: TagType.RED
         }
     ]
 }
