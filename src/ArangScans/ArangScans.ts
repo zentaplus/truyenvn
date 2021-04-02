@@ -4,7 +4,7 @@ import {Madara} from '../Madara'
 const ARANGSCANS_DOMAIN = "https://arangscans.com"
 
 export const ArangScansInfo: SourceInfo = {
-    version: '1.1.1',
+    version: '1.1.2',
     name: 'ArangScans',
     description: 'Extension that pulls manga from arangscans.com',
     author: 'GameFuzzy',

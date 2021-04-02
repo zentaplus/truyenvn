@@ -101,7 +101,8 @@ export abstract class Madara extends Source {
             url: `${this.baseUrl}/${this.sourceTraversalPathName}/${chapterId}/`,
             method: 'GET',
             headers: this.constructHeaders({}),
-            cookies: [createCookie({name: 'wpmanga-adault', value: "1", domain: this.baseUrl})]
+            cookies: [createCookie({name: 'wpmanga-adault', value: "1", domain: this.baseUrl})],
+            param: "?style=list"
         })
 
         let data = await this.requestManager.schedule(request, 1)
