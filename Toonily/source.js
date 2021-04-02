@@ -695,7 +695,7 @@ const paperback_extensions_common_1 = require("paperback-extensions-common");
 class Parser {
     parseMangaDetails($, mangaId) {
         var _a, _b;
-        let numericId = $('a.wp-manga-action-button').attr('data-post');
+        let numericId = $("script#wp-manga-js-extra").get()[0].children[0].data.match('"manga_id":"(\\d+)"')[1];
         let title = this.decodeHTMLEntity($('div.post-title h1').first().text().replace(/NEW/, '').replace(/HOT/, '').replace('\\n', '').trim());
         let author = this.decodeHTMLEntity($('div.author-content').first().text().replace("\\n", '').trim()).replace('Updating', 'Unknown');
         let artist = this.decodeHTMLEntity($('div.artist-content').first().text().replace("\\n", '').trim()).replace('Updating', 'Unknown');
@@ -913,7 +913,7 @@ const paperback_extensions_common_1 = require("paperback-extensions-common");
 const Madara_1 = require("../Madara");
 const TOONILY_DOMAIN = "https://toonily.com";
 exports.ToonilyInfo = {
-    version: '1.0.0',
+    version: '1.0.1',
     name: 'Toonily',
     description: 'Extension that pulls manga from toonily.com',
     author: 'GameFuzzy',
@@ -929,6 +929,10 @@ exports.ToonilyInfo = {
         {
             text: "18+",
             type: paperback_extensions_common_1.TagType.YELLOW
+        },
+        {
+            text: "Cloudflare",
+            type: paperback_extensions_common_1.TagType.RED
         }
     ]
 };

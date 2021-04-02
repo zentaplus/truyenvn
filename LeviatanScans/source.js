@@ -331,7 +331,7 @@ const paperback_extensions_common_1 = require("paperback-extensions-common");
 const Madara_1 = require("../Madara");
 const LEVIATANSCANS_DOMAIN = "https://leviatanscans.com";
 exports.LeviatanScansInfo = {
-    version: '1.1.0',
+    version: '1.1.1',
     name: 'LeviatanScans',
     description: 'Extension that pulls manga from leviatanscans.com',
     author: 'GameFuzzy',
@@ -727,7 +727,7 @@ const paperback_extensions_common_1 = require("paperback-extensions-common");
 class Parser {
     parseMangaDetails($, mangaId) {
         var _a, _b;
-        let numericId = $('a.wp-manga-action-button').attr('data-post');
+        let numericId = $("script#wp-manga-js-extra").get()[0].children[0].data.match('"manga_id":"(\\d+)"')[1];
         let title = this.decodeHTMLEntity($('div.post-title h1').first().text().replace(/NEW/, '').replace(/HOT/, '').replace('\\n', '').trim());
         let author = this.decodeHTMLEntity($('div.author-content').first().text().replace("\\n", '').trim()).replace('Updating', 'Unknown');
         let artist = this.decodeHTMLEntity($('div.artist-content').first().text().replace("\\n", '').trim()).replace('Updating', 'Unknown');
