@@ -4,7 +4,7 @@ import {Madara} from '../Madara'
 const COMICKIBA_DOMAIN = "https://comickiba.com"
 
 export const ComicKibaInfo: SourceInfo = {
-    version: '1.1.0',
+    version: '1.1.1',
     name: 'ComicKiba',
     description: 'Extension that pulls manga from comickiba.com',
     author: 'GameFuzzy',

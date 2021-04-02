@@ -4,7 +4,7 @@ import {Madara} from '../Madara'
 const WEBTOON_DOMAIN = "https://www.webtoon.xyz"
 
 export const WebtoonXYZInfo: SourceInfo = {
-    version: '1.1.0',
+    version: '1.1.1',
     name: 'WebtoonXYZ',
     description: 'Extension that pulls manga from Webtoon.XYZ',
     author: 'GameFuzzy',
@@ -16,6 +16,10 @@ export const WebtoonXYZInfo: SourceInfo = {
         {
             text: "Notifications",
             type: TagType.GREEN
+        },
+        {
+            text: "Cloudflare",
+            type: TagType.RED
         }
     ]
 }

@@ -4,7 +4,7 @@ import {Madara} from '../Madara'
 const SKSCANS_DOMAIN = "https://skscans.com"
 
 export const SKScansInfo: SourceInfo = {
-    version: '1.1.0',
+    version: '1.1.1',
     name: 'SKScans',
     description: 'Extension that pulls manga from skscans.com',
     author: 'GameFuzzy',
