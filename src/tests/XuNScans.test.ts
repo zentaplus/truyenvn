@@ -1,13 +1,13 @@
 import cheerio from 'cheerio'
 import { APIWrapper } from 'paperback-extensions-common'
 import { Madara } from '../Madara'
-import { ManhuaPlus } from '../ManhuaPlus/ManhuaPlus'
+import { XuNScans } from '../XuNScans/XuNScans'
 
-describe('ManhuaPlus Tests', function () {
+describe('XuNScans Tests', function () {
 
 
     var wrapper: APIWrapper = new APIWrapper();
-    var source: Madara = new ManhuaPlus(cheerio);
+    var source: Madara = new XuNScans(cheerio);
     var chai = require('chai'), expect = chai.expect, should = chai.should();
     var chaiAsPromised = require('chai-as-promised');
     chai.use(chaiAsPromised);
@@ -17,7 +17,7 @@ describe('ManhuaPlus Tests', function () {
      * Try to choose a manga which is updated frequently, so that the historical checking test can
      * return proper results, as it is limited to searching 30 days back due to extremely long processing times otherwise.
      */
-    var mangaId = "yi-shen-dang-guan"
+    var mangaId = "sleepy-barmaid"
 
     it("Retrieve Manga Details", async () => {
         let details = await wrapper.getMangaDetails(source, mangaId);

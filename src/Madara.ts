@@ -93,7 +93,7 @@ export abstract class Madara extends Source {
             }),
             data: this.urlEncodeObject({
                 "action": "manga_get_chapters",
-                "manga": mangaId
+                "manga": await this.getNumericId(mangaId)
             })
         })
 
@@ -108,7 +108,7 @@ export abstract class Madara extends Source {
         const request = createRequestObject({
             url: `${this.baseUrl}/${this.sourceTraversalPathName}/${chapterId}/`,
             method: 'GET',
-            headers: this.constructHeaders({}),
+            headers: this.constructHeaders(),
             cookies: [createCookie({name: 'wpmanga-adault', value: "1", domain: this.baseUrl})],
             param: this.chapterDetailsParam
         })
@@ -127,14 +127,14 @@ export abstract class Madara extends Source {
             request = createRequestObject({
                 url: `${this.baseUrl}/?s=&post_type=wp-manga`,
                 method: 'GET',
-                headers: this.constructHeaders({})
+                headers: this.constructHeaders()
             })
         }
         else {
             request = createRequestObject({
                 url: `${this.baseUrl}/`,
                 method: 'GET',
-                headers: this.constructHeaders({})
+                headers: this.constructHeaders()
             })
         }
 
@@ -283,16 +283,15 @@ export abstract class Madara extends Source {
         return createRequestObject({
             url: `${this.baseUrl}`,
             method: 'GET',
-            headers: this.constructHeaders({})
+            headers: this.constructHeaders()
         })
     }
 
-    // Only used in the test wrapper
     async getNumericId(mangaId: string): Promise<string> {
         const request = createRequestObject({
             url: `${this.baseUrl}/${this.sourceTraversalPathName}/${mangaId}/`,
             method: 'GET',
-            headers: this.constructHeaders({})
+            headers: this.constructHeaders()
         })
 
         let data = await this.requestManager.schedule(request, 1)
@@ -362,7 +361,8 @@ export abstract class Madara extends Source {
         return time
     }
 
-    constructHeaders(headers: any, refererPath?: string): any {
+    constructHeaders(headers?: any, refererPath?: string): any {
+        headers = headers ?? {}
         if(this.userAgentRandomizer !== '') {
             headers["user-agent"] = this.userAgentRandomizer
         }

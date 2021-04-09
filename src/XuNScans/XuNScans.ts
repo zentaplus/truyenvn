@@ -4,7 +4,7 @@ import {Madara} from '../Madara'
 const XUNSCANS_DOMAIN = "https://reader.xunscans.xyz"
 
 export const XuNScansInfo: SourceInfo = {
-    version: '0.0.1',
+    version: '1.1.1',
     name: 'XuNScans',
     description: 'Extension that pulls manga from xunscans.xyz',
     author: 'Nuno Costa',

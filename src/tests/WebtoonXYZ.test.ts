@@ -1,37 +1,23 @@
 import cheerio from 'cheerio'
-import { MadaraAPIWrapper } from '../MadaraAPIWrapper'
+import { APIWrapper } from 'paperback-extensions-common'
 import { Madara } from '../Madara'
 import { WebtoonXYZ } from '../WebtoonXYZ/WebtoonXYZ'
 
 describe('WebtoonXYZ Tests', function () {
 
 
-    var wrapper: MadaraAPIWrapper = new MadaraAPIWrapper();
+    var wrapper: APIWrapper = new APIWrapper();
     var source: Madara = new WebtoonXYZ(cheerio);
     var chai = require('chai'), expect = chai.expect, should = chai.should();
     var chaiAsPromised = require('chai-as-promised');
     chai.use(chaiAsPromised);
 
     /**
-     * The Manga ID which this unit test uses to Madara it's details off of.
+     * The Manga ID which this unit test uses to Madara its details off of.
      * Try to choose a manga which is updated frequently, so that the historical checking test can
      * return proper results, as it is limited to searching 30 days back due to extremely long processing times otherwise.
      */
-    var mangaId = "volcanic-age";
-    var mangaNumericId = ''
-
-    // Grab the ID automatically
-    before(async () =>
-    {
-        if(mangaNumericId === '') {
-            try{
-                mangaNumericId = await wrapper.getMadaraNumericId(source, mangaId)
-            }
-            catch {
-                console.log(`Could not automatically retrieve the numeric id for "${mangaId}". Try entering it manually.`)
-            }
-        }
-    })
+    var mangaId = "volcanic-age"
 
     it("Retrieve Manga Details", async () => {
         let details = await wrapper.getMangaDetails(source, mangaId);
@@ -49,7 +35,7 @@ describe('WebtoonXYZ Tests', function () {
     });
 
     it("Get Chapters", async () => {
-        let data = await wrapper.getChapters(source, mangaNumericId);
+        let data = await wrapper.getChapters(source, mangaId);
         expect(data, "No chapters present for: [" + mangaId + "]").to.not.be.empty;
 
         let entry = data[0]
@@ -60,7 +46,7 @@ describe('WebtoonXYZ Tests', function () {
     });
 
     it("Get Chapter Details", async () => {
-        let chapters = await wrapper.getChapters(source, mangaNumericId);
+        let chapters = await wrapper.getChapters(source, mangaId);
         let data = await wrapper.getChapterDetails(source, mangaId, chapters[0].id);
 
         expect(data, "No server response").to.exist;
