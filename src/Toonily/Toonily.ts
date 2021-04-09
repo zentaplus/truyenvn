@@ -4,7 +4,7 @@ import {Madara} from '../Madara'
 const TOONILY_DOMAIN = "https://toonily.com"
 
 export const ToonilyInfo: SourceInfo = {
-    version: '1.0.1',
+    version: '1.1.2',
     name: 'Toonily',
     description: 'Extension that pulls manga from toonily.com',
     author: 'GameFuzzy',

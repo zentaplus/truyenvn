@@ -4,7 +4,7 @@ import {Madara} from "../Madara";
 const LEVIATANSCANSES_DOMAIN = "https://es.leviatanscans.com"
 
 export const LeviatanScansESInfo: SourceInfo = {
-    version: '1.1.1',
+    version: '1.1.2',
     name: 'LeviatanScansES',
     description: 'Extension that pulls manga from es.leviatanscans.com',
     author: 'GameFuzzy',

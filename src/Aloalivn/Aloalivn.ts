@@ -4,7 +4,7 @@ import {Madara} from '../Madara'
 const ALOALIVN_DOMAIN = "https://aloalivn.com"
 
 export const AloalivnInfo: SourceInfo = {
-    version: '1.1.1',
+    version: '1.1.2',
     name: 'Aloalivn',
     description: 'Extension that pulls manga from aloalivn.com',
     author: 'GameFuzzy',

@@ -4,7 +4,7 @@ import {Madara} from '../Madara'
 const HIPERDEX_DOMAIN = "https://hiperdex.com"
 
 export const HiperDexInfo: SourceInfo = {
-    version: '1.1.1',
+    version: '1.1.2',
     name: 'HiperDex',
     description: 'Extension that pulls manga from hiperdex.com',
     author: 'GameFuzzy',

@@ -4,7 +4,7 @@ import {Madara} from '../Madara'
 const MANGATX_DOMAIN = "https://mangatx.com"
 
 export const MangaTXInfo: SourceInfo = {
-    version: '1.1.1',
+    version: '1.1.2',
     name: 'MangaTX',
     description: 'Extension that pulls manga from mangatx.com',
     author: 'GameFuzzy',
