@@ -98,6 +98,7 @@
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-overwrite"><a href="_mangatx_mangatx_.mangatx.html#baseurl" class="tsd-kind-icon">base<wbr>Url</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_mangatx_mangatx_.mangatx.html#chapterdetailsparam" class="tsd-kind-icon">chapter<wbr>Details<wbr>Param</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_mangatx_mangatx_.mangatx.html#chapterdetailsselector" class="tsd-kind-icon">chapter<wbr>Details<wbr>Selector</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_mangatx_mangatx_.mangatx.html#chapterrowselector" class="tsd-kind-icon">chapter<wbr>Row<wbr>Selector</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected"><a href="_mangatx_mangatx_.mangatx.html#cheerio" class="tsd-kind-icon">cheerio</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-overwrite"><a href="_mangatx_mangatx_.mangatx.html#hasadvancedsearchpage" class="tsd-kind-icon">has<wbr>Advanced<wbr>Search<wbr>Page</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-overwrite"><a href="_mangatx_mangatx_.mangatx.html#languagecode" class="tsd-kind-icon">language<wbr>Code</a></li>
@@ -174,7 +175,7 @@
 					<aside class="tsd-sources">
 						<p>Overrides <a href="_madara_.madara.html">Madara</a>.<a href="_madara_.madara.html#baseurl">baseUrl</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/Paperback-iOS/extensions-madara/blob/f69f741/src/MangaTX/MangaTX.ts#L24">src/MangaTX/MangaTX.ts:24</a></li>
+							<li>Defined in <a href="https://github.com/Paperback-iOS/extensions-madara/blob/a3648da/src/MangaTX/MangaTX.ts#L24">src/MangaTX/MangaTX.ts:24</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -185,7 +186,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="_madara_.madara.html">Madara</a>.<a href="_madara_.madara.html#chapterdetailsparam">chapterDetailsParam</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/Paperback-iOS/extensions-madara/blob/f69f741/src/Madara.ts#L52">src/Madara.ts:52</a></li>
+							<li>Defined in <a href="https://github.com/Paperback-iOS/extensions-madara/blob/a3648da/src/Madara.ts#L60">src/Madara.ts:60</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -204,7 +205,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="_madara_.madara.html">Madara</a>.<a href="_madara_.madara.html#chapterdetailsselector">chapterDetailsSelector</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/Paperback-iOS/extensions-madara/blob/f69f741/src/Madara.ts#L59">src/Madara.ts:59</a></li>
+							<li>Defined in <a href="https://github.com/Paperback-iOS/extensions-madara/blob/a3648da/src/Madara.ts#L67">src/Madara.ts:67</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -212,6 +213,25 @@
 							<p>Different Madara sources might have a slightly different selector which is required to parse out
 								each page while on a chapter page. This is the selector
 							which is looped over. This may be overridden if required.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="chapterrowselector" class="tsd-anchor"></a>
+					<h3>chapter<wbr>Row<wbr>Selector</h3>
+					<div class="tsd-signature tsd-kind-icon">chapter<wbr>Row<wbr>Selector<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;li.wp-manga-chapter&quot;</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="_madara_.madara.html">Madara</a>.<a href="_madara_.madara.html#chapterrowselector">chapterRowSelector</a></p>
+						<ul>
+							<li>Defined in <a href="https://github.com/Paperback-iOS/extensions-madara/blob/a3648da/src/Madara.ts#L52">src/Madara.ts:52</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The standard HTML selector that denotes an individual chapter row is <code>li.wp-manga-chapter</code>. However,
+								some sources have an alternate class or HTML element that denotes a row. The selector should return each row,
+								meaning that one node returned by the selector corresponds to one chapter row, so this should return 0 rows if
+							the chapter has no chapters and 1 or more rows if the chapter has 1 or more chapters.</p>
 						</div>
 					</div>
 				</section>
@@ -233,7 +253,7 @@
 					<aside class="tsd-sources">
 						<p>Overrides <a href="_madara_.madara.html">Madara</a>.<a href="_madara_.madara.html#hasadvancedsearchpage">hasAdvancedSearchPage</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/Paperback-iOS/extensions-madara/blob/f69f741/src/MangaTX/MangaTX.ts#L26">src/MangaTX/MangaTX.ts:26</a></li>
+							<li>Defined in <a href="https://github.com/Paperback-iOS/extensions-madara/blob/a3648da/src/MangaTX/MangaTX.ts#L26">src/MangaTX/MangaTX.ts:26</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -244,7 +264,7 @@
 					<aside class="tsd-sources">
 						<p>Overrides <a href="_madara_.madara.html">Madara</a>.<a href="_madara_.madara.html#languagecode">languageCode</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/Paperback-iOS/extensions-madara/blob/f69f741/src/MangaTX/MangaTX.ts#L25">src/MangaTX/MangaTX.ts:25</a></li>
+							<li>Defined in <a href="https://github.com/Paperback-iOS/extensions-madara/blob/a3648da/src/MangaTX/MangaTX.ts#L25">src/MangaTX/MangaTX.ts:25</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -255,7 +275,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="_madara_.madara.html">Madara</a>.<a href="_madara_.madara.html#loadmoresearchmanga">loadMoreSearchManga</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/Paperback-iOS/extensions-madara/blob/f69f741/src/Madara.ts#L64">src/Madara.ts:64</a></li>
+							<li>Defined in <a href="https://github.com/Paperback-iOS/extensions-madara/blob/a3648da/src/Madara.ts#L72">src/Madara.ts:72</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -271,7 +291,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="_madara_.madara.html">Madara</a>.<a href="_madara_.madara.html#parser">parser</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/Paperback-iOS/extensions-madara/blob/f69f741/src/Madara.ts#L71">src/Madara.ts:71</a></li>
+							<li>Defined in <a href="https://github.com/Paperback-iOS/extensions-madara/blob/a3648da/src/Madara.ts#L79">src/Madara.ts:79</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -299,7 +319,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="_madara_.madara.html">Madara</a>.<a href="_madara_.madara.html#searchmangaselector">searchMangaSelector</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/Paperback-iOS/extensions-madara/blob/f69f741/src/Madara.ts#L39">src/Madara.ts:39</a></li>
+							<li>Defined in <a href="https://github.com/Paperback-iOS/extensions-madara/blob/a3648da/src/Madara.ts#L39">src/Madara.ts:39</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -317,7 +337,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="_madara_.madara.html">Madara</a>.<a href="_madara_.madara.html#sourcetraversalpathname">sourceTraversalPathName</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/Paperback-iOS/extensions-madara/blob/f69f741/src/Madara.ts#L32">src/Madara.ts:32</a></li>
+							<li>Defined in <a href="https://github.com/Paperback-iOS/extensions-madara/blob/a3648da/src/Madara.ts#L32">src/Madara.ts:32</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -335,7 +355,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="_madara_.madara.html">Madara</a>.<a href="_madara_.madara.html#useragentrandomizer">userAgentRandomizer</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/Paperback-iOS/extensions-madara/blob/f69f741/src/Madara.ts#L69">src/Madara.ts:69</a></li>
+							<li>Defined in <a href="https://github.com/Paperback-iOS/extensions-madara/blob/a3648da/src/Madara.ts#L77">src/Madara.ts:77</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -358,7 +378,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_madara_.madara.html">Madara</a>.<a href="_madara_.madara.html#cloudflareerror">CloudFlareError</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Paperback-iOS/extensions-madara/blob/f69f741/src/Madara.ts#L389">src/Madara.ts:389</a></li>
+									<li>Defined in <a href="https://github.com/Paperback-iOS/extensions-madara/blob/a3648da/src/Madara.ts#L404">src/Madara.ts:404</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -382,7 +402,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_madara_.madara.html">Madara</a>.<a href="_madara_.madara.html#constructajaxrequest">constructAjaxRequest</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Paperback-iOS/extensions-madara/blob/f69f741/src/Madara.ts#L312">src/Madara.ts:312</a></li>
+									<li>Defined in <a href="https://github.com/Paperback-iOS/extensions-madara/blob/a3648da/src/Madara.ts#L327">src/Madara.ts:327</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -420,7 +440,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_madara_.madara.html">Madara</a>.<a href="_madara_.madara.html#constructheaders">constructHeaders</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Paperback-iOS/extensions-madara/blob/f69f741/src/Madara.ts#L365">src/Madara.ts:365</a></li>
+									<li>Defined in <a href="https://github.com/Paperback-iOS/extensions-madara/blob/a3648da/src/Madara.ts#L380">src/Madara.ts:380</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -448,7 +468,7 @@
 								<p>Inherited from <a href="_madara_.madara.html">Madara</a>.<a href="_madara_.madara.html#converttime">convertTime</a></p>
 								<p>Overrides Source.convertTime</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Paperback-iOS/extensions-madara/blob/f69f741/src/Madara.ts#L346">src/Madara.ts:346</a></li>
+									<li>Defined in <a href="https://github.com/Paperback-iOS/extensions-madara/blob/a3648da/src/Madara.ts#L361">src/Madara.ts:361</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -478,7 +498,7 @@
 								<p>Inherited from <a href="_madara_.madara.html">Madara</a>.<a href="_madara_.madara.html#filterupdatedmanga">filterUpdatedManga</a></p>
 								<p>Overrides Source.filterUpdatedManga</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Paperback-iOS/extensions-madara/blob/f69f741/src/Madara.ts#L166">src/Madara.ts:166</a></li>
+									<li>Defined in <a href="https://github.com/Paperback-iOS/extensions-madara/blob/a3648da/src/Madara.ts#L174">src/Madara.ts:174</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -577,7 +597,7 @@
 								<p>Inherited from <a href="_madara_.madara.html">Madara</a>.<a href="_madara_.madara.html#getchapterdetails">getChapterDetails</a></p>
 								<p>Overrides Source.getChapterDetails</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Paperback-iOS/extensions-madara/blob/f69f741/src/Madara.ts#L107">src/Madara.ts:107</a></li>
+									<li>Defined in <a href="https://github.com/Paperback-iOS/extensions-madara/blob/a3648da/src/Madara.ts#L115">src/Madara.ts:115</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -605,7 +625,7 @@
 								<p>Inherited from <a href="_madara_.madara.html">Madara</a>.<a href="_madara_.madara.html#getchapters">getChapters</a></p>
 								<p>Overrides Source.getChapters</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Paperback-iOS/extensions-madara/blob/f69f741/src/Madara.ts#L87">src/Madara.ts:87</a></li>
+									<li>Defined in <a href="https://github.com/Paperback-iOS/extensions-madara/blob/a3648da/src/Madara.ts#L95">src/Madara.ts:95</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -630,7 +650,7 @@
 								<p>Inherited from <a href="_madara_.madara.html">Madara</a>.<a href="_madara_.madara.html#getcloudflarebypassrequest">getCloudflareBypassRequest</a></p>
 								<p>Overrides Source.getCloudflareBypassRequest</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Paperback-iOS/extensions-madara/blob/f69f741/src/Madara.ts#L282">src/Madara.ts:282</a></li>
+									<li>Defined in <a href="https://github.com/Paperback-iOS/extensions-madara/blob/a3648da/src/Madara.ts#L297">src/Madara.ts:297</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Request</span></h4>
@@ -649,7 +669,7 @@
 								<p>Inherited from <a href="_madara_.madara.html">Madara</a>.<a href="_madara_.madara.html#gethomepagesections">getHomePageSections</a></p>
 								<p>Overrides Source.getHomePageSections</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Paperback-iOS/extensions-madara/blob/f69f741/src/Madara.ts#L196">src/Madara.ts:196</a></li>
+									<li>Defined in <a href="https://github.com/Paperback-iOS/extensions-madara/blob/a3648da/src/Madara.ts#L211">src/Madara.ts:211</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -701,7 +721,7 @@
 								<p>Inherited from <a href="_madara_.madara.html">Madara</a>.<a href="_madara_.madara.html#getmangadetails">getMangaDetails</a></p>
 								<p>Overrides Source.getMangaDetails</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Paperback-iOS/extensions-madara/blob/f69f741/src/Madara.ts#L72">src/Madara.ts:72</a></li>
+									<li>Defined in <a href="https://github.com/Paperback-iOS/extensions-madara/blob/a3648da/src/Madara.ts#L80">src/Madara.ts:80</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -756,7 +776,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_madara_.madara.html">Madara</a>.<a href="_madara_.madara.html#getnumericid">getNumericId</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Paperback-iOS/extensions-madara/blob/f69f741/src/Madara.ts#L291">src/Madara.ts:291</a></li>
+									<li>Defined in <a href="https://github.com/Paperback-iOS/extensions-madara/blob/a3648da/src/Madara.ts#L306">src/Madara.ts:306</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -781,7 +801,7 @@
 								<p>Inherited from <a href="_madara_.madara.html">Madara</a>.<a href="_madara_.madara.html#gettags">getTags</a></p>
 								<p>Overrides Source.getTags</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Paperback-iOS/extensions-madara/blob/f69f741/src/Madara.ts#L124">src/Madara.ts:124</a></li>
+									<li>Defined in <a href="https://github.com/Paperback-iOS/extensions-madara/blob/a3648da/src/Madara.ts#L132">src/Madara.ts:132</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">TagSection</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -800,7 +820,7 @@
 								<p>Inherited from <a href="_madara_.madara.html">Madara</a>.<a href="_madara_.madara.html#getviewmoreitems">getViewMoreItems</a></p>
 								<p>Overrides Source.getViewMoreItems</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Paperback-iOS/extensions-madara/blob/f69f741/src/Madara.ts#L245">src/Madara.ts:245</a></li>
+									<li>Defined in <a href="https://github.com/Paperback-iOS/extensions-madara/blob/a3648da/src/Madara.ts#L260">src/Madara.ts:260</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -883,7 +903,7 @@
 								<p>Inherited from <a href="_madara_.madara.html">Madara</a>.<a href="_madara_.madara.html#globalrequestheaders">globalRequestHeaders</a></p>
 								<p>Overrides Source.globalRequestHeaders</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Paperback-iOS/extensions-madara/blob/f69f741/src/Madara.ts#L373">src/Madara.ts:373</a></li>
+									<li>Defined in <a href="https://github.com/Paperback-iOS/extensions-madara/blob/a3648da/src/Madara.ts#L388">src/Madara.ts:388</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">RequestHeaders</span></h4>
@@ -902,7 +922,7 @@
 								<p>Inherited from <a href="_madara_.madara.html">Madara</a>.<a href="_madara_.madara.html#searchrequest">searchRequest</a></p>
 								<p>Overrides Source.searchRequest</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Paperback-iOS/extensions-madara/blob/f69f741/src/Madara.ts#L147">src/Madara.ts:147</a></li>
+									<li>Defined in <a href="https://github.com/Paperback-iOS/extensions-madara/blob/a3648da/src/Madara.ts#L155">src/Madara.ts:155</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -986,6 +1006,9 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="_mangatx_mangatx_.mangatx.html#chapterdetailsselector" class="tsd-kind-icon">chapter<wbr>Details<wbr>Selector</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="_mangatx_mangatx_.mangatx.html#chapterrowselector" class="tsd-kind-icon">chapter<wbr>Row<wbr>Selector</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
 								<a href="_mangatx_mangatx_.mangatx.html#cheerio" class="tsd-kind-icon">cheerio</a>
