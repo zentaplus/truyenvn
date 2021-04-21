@@ -70,28 +70,6 @@ export abstract class Madara extends Source {
 
     parser = new Parser()
     async getMangaDetails(mangaId: string): Promise<Manga> {
-        if (!isNaN(parseInt(mangaId))) {
-            const request = createRequestObject({
-                url: `${this.baseUrl}/wp-admin/admin-ajax.php`,
-                method: 'POST',
-                headers: this.constructHeaders({
-                    "content-type": "application/x-www-form-urlencoded"
-                }),
-                data: this.urlEncodeObject({
-                    "action": "manga_get_chapters",
-                    "manga": mangaId
-                })
-            })
-    
-            let data = await this.requestManager.schedule(request, 1)
-            this.CloudFlareError(data.status)
-            let $ = this.cheerio.load(data.data)
-            const mangaEndpoint = $('a', $('li.wp-manga-chapter  ').first()).attr('href')?.replace(`${this.baseUrl}/${this.sourceTraversalPathName}/`, '').toLowerCase().replace(/\/chapter.*/, '')
-            if (!mangaEndpoint) {
-                throw(`Failed to parse the human-readable title for ${mangaId}`)
-            }
-            mangaId = mangaEndpoint
-        }
         const request = createRequestObject({
             url: `${this.baseUrl}/${this.sourceTraversalPathName}/${mangaId}/`,
             method: 'GET',
