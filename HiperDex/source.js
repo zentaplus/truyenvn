@@ -347,6 +347,10 @@ exports.HiperDexInfo = {
         {
             text: "18+",
             type: paperback_extensions_common_1.TagType.YELLOW
+        },
+        {
+            text: "Cloudflare",
+            type: paperback_extensions_common_1.TagType.RED
         }
     ]
 };
