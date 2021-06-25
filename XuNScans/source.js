@@ -961,9 +961,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.XuNScans = exports.XuNScansInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const Madara_1 = require("../Madara");
-const XUNSCANS_DOMAIN = "https://reader.xunscans.xyz";
+const XUNSCANS_DOMAIN = "https://xunscans.xyz";
 exports.XuNScansInfo = {
-    version: '0.0.1',
+    version: '0.0.2',
     name: 'XuNScans',
     description: 'Extension that pulls manga from xunscans.xyz',
     author: 'Nuno Costa',
