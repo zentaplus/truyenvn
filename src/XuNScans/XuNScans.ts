@@ -1,10 +1,10 @@
 import {LanguageCode, SourceInfo, TagType} from "paperback-extensions-common";
 import {Madara} from '../Madara'
 
-const XUNSCANS_DOMAIN = "https://reader.xunscans.xyz"
+const XUNSCANS_DOMAIN = "https://xunscans.xyz"
 
 export const XuNScansInfo: SourceInfo = {
-    version: '0.0.1',
+    version: '0.0.2',
     name: 'XuNScans',
     description: 'Extension that pulls manga from xunscans.xyz',
     author: 'Nuno Costa',
