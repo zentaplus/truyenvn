@@ -4,7 +4,7 @@ import {Madara} from '../Madara'
 const MANHUAPLUS_DOMAIN = "https://manhuaplus.com"
 
 export const ManhuaPlusInfo: SourceInfo = {
-    version: '1.1.1',
+    version: '1.1.2',
     name: 'ManhuaPlus',
     description: 'Extension that pulls manga from manhuaplus.com',
     author: 'GameFuzzy',
@@ -24,5 +24,5 @@ export class ManhuaPlus extends Madara {
     baseUrl: string = MANHUAPLUS_DOMAIN
     languageCode: LanguageCode = LanguageCode.ENGLISH
     hasAdvancedSearchPage = true
-    chapterDetailsSelector: string = 'li.blocks-gallery-item > figure > img, div.page-break > img'
+    chapterDetailsSelector: string = 'li.blocks-gallery-item > figure > img, div.page-break > img, div#chapter-video-frame > p > img'
 }
